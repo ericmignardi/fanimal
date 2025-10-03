@@ -1,0 +1,27 @@
+# ----------------------
+# General
+# ----------------------
+*.log
+*.env
+.DS_Store
+
+# ----------------------
+# Backend (Java / Spring Boot)
+# ----------------------
+/target/
+/out/
+/*.iml
+/.idea/
+
+# ----------------------
+# Frontend (React / Vite)
+# ----------------------
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.vite/
+/frontend/.env.local
+
+# ----------------------
+# Docker
+# ----------------------
+docker-compose.override.yml
