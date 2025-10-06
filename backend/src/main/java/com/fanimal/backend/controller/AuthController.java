@@ -37,15 +37,14 @@ public class AuthController {
         }
     }
 
-//    @PostMapping("/logout")
-//    public ResponseEntity<JwtResponse> logout() {
-//        try {
-//
-//        }  catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//        }
-//        return ResponseEntity.status(HttpStatus.OK).body("Logged out successfully");
-//    }
+    @PostMapping("/logout")
+    public ResponseEntity<JwtResponse> logout() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }  catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
 
 //| Method | Endpoint           | Description               |
 //| ------ | ------------------ | ------------------------- |

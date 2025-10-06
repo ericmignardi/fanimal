@@ -1,5 +1,6 @@
 package com.fanimal.backend.security;
 
+import com.fanimal.backend.dto.UserResponse;
 import com.fanimal.backend.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -27,10 +28,10 @@ public class JwtUtils {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(User user) {
+    public String generateToken(UserResponse userResponse) {
         return Jwts.builder()
-                .subject(user.getUsername())
-                .claim("roles", user.getRoles())
+                .subject(userResponse.getUsername())
+                .claim("roles", userResponse.getRoles())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key)
