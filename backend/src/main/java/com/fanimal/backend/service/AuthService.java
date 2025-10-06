@@ -37,7 +37,10 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username is already in use");
         }
         Role userRole = roleRepository.findByName(Role.RoleName.USER)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Default role not found"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Default role not found"
+                ));
         User user = User.builder()
                 .name(registerRequest.getName())
                 .email(registerRequest.getEmail())
@@ -57,20 +60,29 @@ public class AuthService {
         return new JwtResponse(token, userResponse);
     }
 
-
-
     public JwtResponse login(LoginRequest loginRequest) {
-        User user = userRepository.findByUsername(loginRequest.getUsername())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-        }
-        UserResponse userResponse = new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getUsername(), user.getRoles());
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
+        );
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "User does not exist"
+                ));
+        UserResponse userResponse = new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getUsername(),
+                user.getRoles()
+        );
         String token = jwtUtils.generateToken(userResponse);
         return new JwtResponse(token, userResponse);
     }
 
-//    public void logout() {}
+    public void logout() {}
 }

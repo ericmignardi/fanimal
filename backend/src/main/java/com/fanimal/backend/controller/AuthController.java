@@ -19,36 +19,18 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        try {
-            JwtResponse jwtResponse = authService.register(registerRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body(jwtResponse);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        JwtResponse jwtResponse = authService.register(registerRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(jwtResponse);
     }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-        try {
-            JwtResponse jwtResponse = authService.login(loginRequest);
-            return ResponseEntity.status(HttpStatus.OK).body(jwtResponse);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        JwtResponse jwtResponse = authService.login(loginRequest);
+        return ResponseEntity.ok(jwtResponse);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<JwtResponse> logout() {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }  catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Void> logout() {
+        return ResponseEntity.ok().build();
     }
-
-//| Method | Endpoint           | Description               |
-//| ------ | ------------------ | ------------------------- |
-//| POST   | /api/auth/register | Register new user         |
-//| POST   | /api/auth/login    | Login, returns JWT        |
-//| POST   | /api/auth/logout   | Logout / invalidate token |
 }
