@@ -1,45 +1,70 @@
-import { createContext, useState } from "react";
+import {createContext, useState} from "react";
 import {axiosInstance} from "../services/api.ts";
 import toast from "react-hot-toast";
+import type {
+    AuthContextType,
+    RegisterFormType,
+    LoginFormType,
+    AuthProviderPropsType,
+    UserType
+} from "../types/authTypes.ts";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext<AuthContextType>({
+    user: null,
+    register: async () => {
+    },
+    login: async () => {
+    },
+    logout: async () => {
+    },
+    isRegistering: false,
+    isLoggingIn: false
+});
 
-export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);
+export function AuthProvider({children}: AuthProviderPropsType) {
+    const [user, setUser] = useState<UserType | null>(null);
     const [isRegistering, setIsRegistering] = useState(false);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-    const register = async (formData) => {
+    const register = async (formData: RegisterFormType) => {
         setIsRegistering(true);
         try {
-            const response = await axiosInstance.post("/auth/register", formData);
+            const response = await axiosInstance.post<{ user: UserType }>("/auth/register", formData);
             if (response.status === 201) {
                 setUser(response.data.user);
                 toast.success("Registration successful!");
             } else {
                 toast.error("Registration failed.");
             }
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Error in register: ", error);
-            toast.error(`Unable to register: ${error.message}`);
+            if (error instanceof Error) {
+                toast.error(`Unable to register: ${error.message}`);
+            } else {
+                toast.error("Unable to register");
+            }
         } finally {
             setIsRegistering(false);
         }
     };
 
-    const login = async (formData) => {
+    const login = async (formData: LoginFormType) => {
         setIsLoggingIn(true);
         try {
-            const response = await axiosInstance.post("/auth/login", formData);
+            const response = await axiosInstance.post<{ user: UserType }>("/auth/login", formData);
             if (response.status === 200) {
                 setUser(response.data.user);
                 toast.success("Login successful!");
             } else {
                 toast.error("Login failed.");
             }
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Error in login: ", error);
-            toast.error(`Unable to login: ${error.message}`);
+            if (error instanceof Error) {
+                toast.error(`Unable to login: ${error.message}`);
+            } else {
+                toast.error("Unable to login");
+            }
         } finally {
             setIsLoggingIn(false);
         }
@@ -54,16 +79,18 @@ export function AuthProvider({ children }) {
             } else {
                 toast.error("Logout failed.");
             }
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Error in logout: ", error);
-            toast.error(`Unable to logout: ${error.message}`);
+            if (error instanceof Error) {
+                toast.error(`Unable to logout: ${error.message}`);
+            } else {
+                toast.error("Unable to logout");
+            }
         }
     };
 
     return (
-        <AuthContext.Provider
-            value={{ user, register, login, logout, isRegistering, isLoggingIn }}
-        >
+        <AuthContext.Provider value={{user, register, login, logout, isRegistering, isLoggingIn}}>
             {children}
         </AuthContext.Provider>
     );
