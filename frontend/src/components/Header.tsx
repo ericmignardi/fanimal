@@ -1,27 +1,29 @@
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import logo from "../assets/logo.svg";
 import { NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { MobileMenu } from "./MobileMenu";
 
-export const Header = (): ReactNode => {
-  const [mobileMenu, setMobileMenu] = useState<boolean>(false);
+export const Header = () => {
+  const [mobileMenu, setMobileMenu] = useState(false);
 
   const handleClick = () => {
     setMobileMenu(!mobileMenu);
   };
 
   return (
-    <div>
-      {/* Desktop */}
+    <div className="relative">
       <header className="h-20 bg-[var(--color-bg)] flex justify-between items-center p-4">
         <NavLink to="/">
-          <img className="w-20 md:w-24 xl:w-28" src={logo} alt="fanimal logo" />
+          <img className="w-24 md:w-28 xl:w-32" src={logo} alt="fanimal logo" />
         </NavLink>
         <div className="hidden lg:flex items-center">
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-6 text-base sm:text-lg font-medium">
             <NavLink
               className={({ isActive }) =>
-                isActive ? "text-[var(--color-accent)] font-semibold" : ""
+                isActive
+                  ? "text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent)]/80"
+                  : "hover:text-[var(--color-text)]/80 transition-colors"
               }
               to="/"
             >
@@ -29,7 +31,9 @@ export const Header = (): ReactNode => {
             </NavLink>
             <NavLink
               className={({ isActive }) =>
-                isActive ? "text-[var(--color-accent)] font-semibold" : ""
+                isActive
+                  ? "text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent)]/80"
+                  : "hover:text-[var(--color-text)]/80 transition-colors"
               }
               to="/explore"
             >
@@ -37,13 +41,15 @@ export const Header = (): ReactNode => {
             </NavLink>
             <NavLink
               className={({ isActive }) =>
-                isActive ? "text-[var(--color-accent)] font-semibold" : ""
+                isActive
+                  ? "text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent)]/80"
+                  : "hover:text-[var(--color-text)]/80 transition-colors"
               }
-              to="/about"
+              to="/profile"
             >
-              About
+              Profile
             </NavLink>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 text-base sm:text-lg font-semibold">
               <button className="btn-primary">
                 <NavLink to="/">Log In</NavLink>
               </button>
@@ -53,17 +59,23 @@ export const Header = (): ReactNode => {
             </div>
           </nav>
         </div>
-        <button onClick={handleClick} className="lg:hidden cursor-pointer z-20">
+        <button
+          onClick={handleClick}
+          className="lg:hidden cursor-pointer z-20"
+          aria-label="Toggle menu"
+        >
           {mobileMenu ? (
-            <X className="h-4 w-4 md:h-5 md:w-5" />
+            <X className="h-5 w-5 md:h-6 md:w-6" />
           ) : (
-            <Menu className="h-4 w-4 md:h-5 md:w-5" />
+            <Menu className="h-5 w-5 md:h-6 md:w-6" />
           )}
         </button>
       </header>
 
-      {/* Mobile */}
-      {mobileMenu && <div>Mobile</div>}
+      {/* Mobile Menu */}
+      {mobileMenu && (
+        <MobileMenu mobileMenu={mobileMenu} setMobileMenu={setMobileMenu} />
+      )}
     </div>
   );
 };

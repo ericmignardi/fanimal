@@ -1,10 +1,9 @@
-import type { ReactNode } from "react";
 import { AuthForm } from "../components/AuthForm";
 import { Hero } from "../components/Hero";
 
-export const Home = (): ReactNode => {
+export const Home = () => {
   return (
-    <section className="overflow-y-auto h-full grid grid-rows-1 grid-cols-2 justify-center items-center p-4">
+    <section className="h-full grid grid-cols-1 md:grid-cols-2 justify-center items-center p-4">
       <Hero />
       <AuthForm />
     </section>

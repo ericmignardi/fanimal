@@ -1,9 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Parkinsans:wght@300..800&display=swap");
 @import "tailwindcss";
 
 :root {
   /* Fonts */
-  --font-primary: "Baloo 2";
+  --font-header: "Parkinsans";
+  --font-body: "Inter";
   /* Core Colors */
   --color-bg: #fafaff;
   --color-text: #2d2d2d;
@@ -17,17 +18,26 @@
 }
 
 body {
-  font-family: var(--font-primary), sans-serif;
+  font-family: var(--font-body), sans-serif;
   color: var(--color-text);
   background-color: var(--color-bg);
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-header), sans-serif;
+}
+
 @layer components {
   .btn-primary {
-    @apply text-base font-semibold bg-[var(--color-text)]/10 rounded-4xl px-4 py-2 hover:bg-[var(--color-text)]/20 transition cursor-pointer;
+    @apply text-base sm:text-lg font-semibold bg-[var(--color-text)]/10 rounded-4xl px-4 py-2 hover:bg-[var(--color-text)]/20 transition cursor-pointer;
   }
   .btn-secondary {
-    @apply text-base font-semibold text-[var(--color-bg)] bg-[var(--color-primary)] rounded-4xl px-4 py-2 hover:bg-[var(--color-primary)]/90 transition cursor-pointer;
+    @apply text-base sm:text-lg font-semibold text-[var(--color-bg)] bg-[var(--color-primary)] rounded-4xl px-4 py-2 hover:bg-[var(--color-primary)]/80 transition cursor-pointer;
   }
 }
 
