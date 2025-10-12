@@ -1,6 +1,8 @@
 package com.fanimal.backend.model;
+
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDate;
 
 @Entity
@@ -26,4 +28,7 @@ public class Subscription {
     private double amount;
     private LocalDate startDate;
     private LocalDate endDate;
+
+    @Column(name = "stripe_subscription_id")
+    private String stripeSubscriptionId;
 }

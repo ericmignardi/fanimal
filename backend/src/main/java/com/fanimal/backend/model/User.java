@@ -2,6 +2,7 @@ package com.fanimal.backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.Set;
 import java.util.HashSet;
 
@@ -36,4 +37,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @Column(name = "stripe_customer_id")
+    private String stripeCustomerId;
 }

@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -84,5 +85,12 @@ public class AuthService {
         return new JwtResponse(token, userResponse);
     }
 
-    public void logout() {}
+    public UserResponse getUserResponseByUsername(String username) {
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getUsername(), user.getRoles());
+    }
+
+    public void logout() {
+    }
 }

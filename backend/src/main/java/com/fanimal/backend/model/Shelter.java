@@ -1,7 +1,7 @@
 package com.fanimal.backend.model;
+
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
 
 @Entity
 @Table(name = "shelters")
@@ -15,16 +15,22 @@ public class Shelter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String description;
-    private String address;
 
-    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Animal> animals;
+    @Column(nullable = false)
+    private String address;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
+
+    @Column(name = "stripe_product_id")
+    private String stripeProductId;
+
+    @Column(name = "stripe_price_id")
+    private String stripePriceId;
 }
