@@ -1,4 +1,4 @@
-package com.fanimal.backend.dto;
+package com.fanimal.backend.dto.shelter;
 
 import com.fanimal.backend.model.Shelter;
 import com.fanimal.backend.model.User;
@@ -17,7 +17,6 @@ public class ShelterResponse {
     private String name;
     private String description;
     private String address;
-    private User owner;
 
     public static ShelterResponse fromEntity(Shelter shelter) {
         return ShelterResponse.builder()
@@ -25,7 +24,6 @@ public class ShelterResponse {
                 .name(shelter.getName())
                 .description(shelter.getDescription())
                 .address(shelter.getAddress())
-                .owner(shelter.getOwner())
                 .build();
     }
 }

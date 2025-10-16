@@ -1,4 +1,4 @@
-package com.fanimal.backend.dto;
+package com.fanimal.backend.dto.shelter;
 
 import jakarta.validation.constraints.Size;
 import lombok.Data;

@@ -1,7 +1,8 @@
-package com.fanimal.backend.dto;
+package com.fanimal.backend.dto.subscription;
 
 import com.fanimal.backend.model.Shelter;
 import com.fanimal.backend.model.Subscription;
+import com.fanimal.backend.model.Subscription.Tier;
 import com.fanimal.backend.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class SubscriptionResponse {
     private double amount;
     private LocalDate startDate;
     private LocalDate endDate;
+    private Tier tier;
 
     public static SubscriptionResponse fromEntity(Subscription subscription) {
         return SubscriptionResponse.builder()
@@ -31,6 +33,7 @@ public class SubscriptionResponse {
                 .amount(subscription.getAmount())
                 .startDate(subscription.getStartDate())
                 .endDate(subscription.getEndDate())
+                .tier(subscription.getTier())
                 .build();
     }
 }

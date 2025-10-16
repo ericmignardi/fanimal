@@ -1,9 +1,9 @@
 package com.fanimal.backend.service;
 
-import com.fanimal.backend.dto.JwtResponse;
-import com.fanimal.backend.dto.LoginRequest;
-import com.fanimal.backend.dto.RegisterRequest;
-import com.fanimal.backend.dto.UserResponse;
+import com.fanimal.backend.dto.user.JwtResponse;
+import com.fanimal.backend.dto.user.LoginRequest;
+import com.fanimal.backend.dto.user.RegisterRequest;
+import com.fanimal.backend.dto.user.UserResponse;
 import com.fanimal.backend.model.Role;
 import com.fanimal.backend.model.User;
 import com.fanimal.backend.repository.RoleRepository;
@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.InvalidParameterException;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -32,16 +34,13 @@ public class AuthService {
 
     public JwtResponse register(RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already in use");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username is already in use");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
         }
         Role userRole = roleRepository.findByName(Role.RoleName.USER)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.INTERNAL_SERVER_ERROR,
-                        "Default role not found"
-                ));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
         User user = User.builder()
                 .name(registerRequest.getName())
                 .email(registerRequest.getEmail())
@@ -50,13 +49,7 @@ public class AuthService {
                 .build();
         user.getRoles().add(userRole);
         user = userRepository.save(user);
-        UserResponse userResponse = new UserResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getUsername(),
-                user.getRoles()
-        );
+        UserResponse userResponse = UserResponse.fromEntity(user);
         String token = jwtUtils.generateToken(userResponse);
         return new JwtResponse(token, userResponse);
     }
@@ -70,27 +63,15 @@ public class AuthService {
         );
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "User does not exist"
-                ));
-        UserResponse userResponse = new UserResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getUsername(),
-                user.getRoles()
-        );
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        UserResponse userResponse = UserResponse.fromEntity(user);
         String token = jwtUtils.generateToken(userResponse);
         return new JwtResponse(token, userResponse);
     }
 
-    public UserResponse getUserResponseByUsername(String username) {
-        var user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getUsername(), user.getRoles());
-    }
-
-    public void logout() {
+    public UserResponse verify(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return UserResponse.fromEntity(user);
     }
 }

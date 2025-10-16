@@ -1,4 +1,4 @@
-package com.fanimal.backend.dto;
+package com.fanimal.backend.dto.user;
 
 import com.fanimal.backend.model.Role;
 import com.fanimal.backend.model.User;

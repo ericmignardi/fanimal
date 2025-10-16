@@ -31,4 +31,22 @@ public class Subscription {
 
     @Column(name = "stripe_subscription_id")
     private String stripeSubscriptionId;
+
+    @Enumerated(EnumType.STRING)
+    private Tier tier;
+
+    @Getter
+    public enum Tier {
+        BASIC(9.99),
+        STANDARD(14.99),
+        PREMIUM(19.99);
+
+        private final double price;
+
+        Tier(double price) {
+            this.price = price;
+        }
+    }
 }
+
+

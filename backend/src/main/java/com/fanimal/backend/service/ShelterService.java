@@ -1,19 +1,20 @@
 package com.fanimal.backend.service;
 
-import com.fanimal.backend.dto.ShelterRequest;
-import com.fanimal.backend.dto.ShelterResponse;
-import com.fanimal.backend.dto.ShelterUpdateRequest;
+import com.fanimal.backend.dto.shelter.ShelterRequest;
+import com.fanimal.backend.dto.shelter.ShelterResponse;
+import com.fanimal.backend.dto.shelter.ShelterUpdateRequest;
 import com.fanimal.backend.model.Shelter;
 import com.fanimal.backend.model.User;
 import com.fanimal.backend.repository.ShelterRepository;
 import com.fanimal.backend.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -24,9 +25,9 @@ public class ShelterService {
     private final ShelterRepository shelterRepository;
     private final UserRepository userRepository;
 
-    public ShelterResponse create(@Valid ShelterRequest shelterRequest, UserDetails userDetails) {
+    public ShelterResponse create(ShelterRequest shelterRequest, UserDetails userDetails) {
         User owner = userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Owner not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         Shelter shelter = Shelter.builder()
                 .name(shelterRequest.getName())
                 .description(shelterRequest.getDescription())
@@ -45,15 +46,15 @@ public class ShelterService {
 
     public ShelterResponse findById(Long id) {
         Shelter shelter = shelterRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Shelter not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter not found"));
         return ShelterResponse.fromEntity(shelter);
     }
 
-    public ShelterResponse update(Long id, @Valid ShelterUpdateRequest shelterUpdateRequest, UserDetails userDetails) {
+    public ShelterResponse update(Long id, ShelterUpdateRequest shelterUpdateRequest, UserDetails userDetails) {
         Shelter shelter = shelterRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Shelter not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter not found"));
         if (!isOwnerOrAdmin(shelter, userDetails)) {
-            throw new AccessDeniedException("Access denied");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         shelter.setName(shelterUpdateRequest.getName());
         shelter.setDescription(shelterUpdateRequest.getDescription());
@@ -64,9 +65,9 @@ public class ShelterService {
 
     public void delete(Long id, UserDetails userDetails) {
         Shelter shelter = shelterRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Shelter not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter not found"));
         if (!isOwnerOrAdmin(shelter, userDetails)) {
-            throw new AccessDeniedException("Access denied");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         shelterRepository.delete(shelter);
     }

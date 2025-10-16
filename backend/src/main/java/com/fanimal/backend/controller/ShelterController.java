@@ -1,8 +1,8 @@
 package com.fanimal.backend.controller;
 
-import com.fanimal.backend.dto.ShelterRequest;
-import com.fanimal.backend.dto.ShelterResponse;
-import com.fanimal.backend.dto.ShelterUpdateRequest;
+import com.fanimal.backend.dto.shelter.ShelterRequest;
+import com.fanimal.backend.dto.shelter.ShelterResponse;
+import com.fanimal.backend.dto.shelter.ShelterUpdateRequest;
 import com.fanimal.backend.service.ShelterService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -51,6 +51,9 @@ public class SecurityConfiguration {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers("/api/auth/**").permitAll();
+                    req.requestMatchers("/api/shelters/**").permitAll();
+//                    req.requestMatchers("/api/users/**").permitAll();
+//                    req.requestMatchers("/api/subscriptions/**").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .userDetailsService(customUserDetailsService)

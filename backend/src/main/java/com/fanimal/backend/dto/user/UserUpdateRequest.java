@@ -1,4 +1,4 @@
-package com.fanimal.backend.dto;
+package com.fanimal.backend.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

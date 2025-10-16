@@ -1,6 +1,9 @@
 package com.fanimal.backend.controller;
 
-import com.fanimal.backend.dto.*;
+import com.fanimal.backend.dto.user.JwtResponse;
+import com.fanimal.backend.dto.user.LoginRequest;
+import com.fanimal.backend.dto.user.RegisterRequest;
+import com.fanimal.backend.dto.user.UserResponse;
 import com.fanimal.backend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +37,7 @@ public class AuthController {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        UserResponse userResponse = authService.getUserResponseByUsername(userDetails.getUsername());
+        UserResponse userResponse = authService.verify(userDetails.getUsername());
         return ResponseEntity.ok(userResponse);
     }
 

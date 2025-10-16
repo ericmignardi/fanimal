@@ -1,7 +1,8 @@
 package com.fanimal.backend.controller;
 
-import com.fanimal.backend.dto.UserResponse;
-import com.fanimal.backend.dto.UserUpdateRequest;
+import com.fanimal.backend.dto.user.UserResponse;
+import com.fanimal.backend.dto.user.UserUpdateRequest;
+import com.fanimal.backend.service.SubscriptionService;
 import com.fanimal.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final SubscriptionService subscriptionService;
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SHELTER')")
     @GetMapping("/me")
@@ -32,8 +34,17 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
-//| Method | Endpoint      | Description              |
-//| ------ | ------------- | ------------------------ |
-//| GET    | /api/users/me | Get current user info    |
-//| PUT    | /api/users/me | Update current user info |
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> findById(@PathVariable Long id) {
+        UserResponse userResponse = userService.findById(id);
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

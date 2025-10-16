@@ -1,4 +1,4 @@
-package com.fanimal.backend.dto;
+package com.fanimal.backend.dto.shelter;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
