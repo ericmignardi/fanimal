@@ -1,9 +1,6 @@
 package com.fanimal.backend.service;
 
-import com.fanimal.backend.dto.user.JwtResponse;
-import com.fanimal.backend.dto.user.LoginRequest;
-import com.fanimal.backend.dto.user.RegisterRequest;
-import com.fanimal.backend.dto.user.UserResponse;
+import com.fanimal.backend.dto.user.*;
 import com.fanimal.backend.model.Role;
 import com.fanimal.backend.model.User;
 import com.fanimal.backend.repository.RoleRepository;
@@ -44,8 +41,15 @@ class AuthServiceTest {
     private JwtUtils jwtUtils;
     @Mock
     private AuthenticationManager authenticationManager;
+    @Mock
+    private Authentication authMock;
+    @Mock
+    private UserDetails userDetailsMock;
+
     private static RegisterRequest registerRequest;
     private static LoginRequest loginRequest;
+    private static User savedUser;
+
     public static final String TOKEN = "token";
 
     @BeforeAll
@@ -60,68 +64,61 @@ class AuthServiceTest {
         loginRequest = new LoginRequest();
         loginRequest.setUsername(registerRequest.getUsername());
         loginRequest.setPassword(registerRequest.getPassword());
+        // User
+        savedUser = User.builder()
+                .id(1L)
+                .name(registerRequest.getName())
+                .email(registerRequest.getEmail())
+                .username(registerRequest.getUsername())
+                .password("encodedPassword")
+                .build();
+    }
+
+    @BeforeEach
+    void setupMocks() {
+        lenient().when(userDetailsMock.getUsername()).thenReturn(registerRequest.getUsername());
+        lenient().when(authMock.getPrincipal()).thenReturn(userDetailsMock);
     }
 
     // --------------------- POSITIVE TESTS ---------------------
 
     @Test
     void register() {
-        // GIVEN
         Role role = Role.builder().name(Role.RoleName.USER).build();
-        User savedUser = User.builder()
-                .id(1L)
-                .name(registerRequest.getName())
-                .email(registerRequest.getEmail())
-                .username(registerRequest.getUsername())
-                .password("encodedPassword")
-                .build();
-        // WHEN
+
         when(userRepository.existsByEmail(registerRequest.getEmail())).thenReturn(false);
         when(userRepository.existsByUsername(registerRequest.getUsername())).thenReturn(false);
         when(roleRepository.findByName(Role.RoleName.USER)).thenReturn(Optional.of(role));
         when(passwordEncoder.encode(registerRequest.getPassword())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
         when(jwtUtils.generateToken(any(UserResponse.class))).thenReturn(TOKEN);
-        // ACTION
+
         JwtResponse jwtResponse = authService.register(registerRequest);
-        // THEN
+
         assertNotNull(jwtResponse);
         assertEquals(TOKEN, jwtResponse.getToken());
         assertEquals(registerRequest.getName(), jwtResponse.getUser().getName());
         assertEquals(registerRequest.getEmail(), jwtResponse.getUser().getEmail());
         assertEquals(registerRequest.getUsername(), jwtResponse.getUser().getUsername());
-        // VERIFY
+
         Mockito.verify(userRepository, times(1)).save(any(User.class));
         Mockito.verify(jwtUtils, times(1)).generateToken(any(UserResponse.class));
     }
 
     @Test
     void login() {
-        // GIVEN
-        User savedUser = User.builder()
-                .id(1L)
-                .name(registerRequest.getName())
-                .email(registerRequest.getEmail())
-                .username(registerRequest.getUsername())
-                .password("encodedPassword")
-                .build();
-        Authentication mockAuth = Mockito.mock(Authentication.class);
-        UserDetails mockUserDetails = Mockito.mock(UserDetails.class);
-        // WHEN
-        when(mockUserDetails.getUsername()).thenReturn(registerRequest.getUsername());
-        when(mockAuth.getPrincipal()).thenReturn(mockUserDetails);
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(mockAuth);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
         when(userRepository.findByUsername(registerRequest.getUsername())).thenReturn(Optional.of(savedUser));
         when(jwtUtils.generateToken(any(UserResponse.class))).thenReturn(TOKEN);
-        // ACT
+
         JwtResponse jwtResponse = authService.login(loginRequest);
-        // THEN
+
         assertNotNull(jwtResponse);
         assertEquals(TOKEN, jwtResponse.getToken());
         assertEquals(registerRequest.getName(), jwtResponse.getUser().getName());
         assertEquals(registerRequest.getEmail(), jwtResponse.getUser().getEmail());
         assertEquals(registerRequest.getUsername(), jwtResponse.getUser().getUsername());
-        // VERIFY
+
         Mockito.verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
         Mockito.verify(userRepository, times(1)).findByUsername(registerRequest.getUsername());
         Mockito.verify(jwtUtils, times(1)).generateToken(any(UserResponse.class));
@@ -129,24 +126,15 @@ class AuthServiceTest {
 
     @Test
     void verify() {
-        // GIVEN
-        User savedUser = User.builder()
-                .id(1L)
-                .name(registerRequest.getName())
-                .email(registerRequest.getEmail())
-                .username(registerRequest.getUsername())
-                .password("encodedPassword")
-                .build();
-        // WHEN
         when(userRepository.findByUsername(registerRequest.getUsername())).thenReturn(Optional.of(savedUser));
-        // ACT
+
         UserResponse userResponse = authService.verify(registerRequest.getUsername());
-        // THEN
+
         assertNotNull(userResponse);
         assertEquals(registerRequest.getName(), userResponse.getName());
         assertEquals(registerRequest.getEmail(), userResponse.getEmail());
         assertEquals(registerRequest.getUsername(), userResponse.getUsername());
-        // VERIFY
+
         Mockito.verify(userRepository, times(1)).findByUsername(registerRequest.getUsername());
     }
 
@@ -155,7 +143,10 @@ class AuthServiceTest {
     @Test
     void registerShouldReturn409WhenEmailAlreadyInUse() {
         when(userRepository.existsByEmail(registerRequest.getEmail())).thenReturn(true);
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> authService.register(registerRequest));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> authService.register(registerRequest));
+
         assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
         Mockito.verify(userRepository, never()).save(any());
         Mockito.verify(jwtUtils, never()).generateToken(any());
@@ -165,7 +156,10 @@ class AuthServiceTest {
     void registerShouldReturn409WhenUsernameAlreadyInUse() {
         when(userRepository.existsByEmail(registerRequest.getEmail())).thenReturn(false);
         when(userRepository.existsByUsername(registerRequest.getUsername())).thenReturn(true);
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> authService.register(registerRequest));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> authService.register(registerRequest));
+
         assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
         Mockito.verify(userRepository, never()).save(any());
         Mockito.verify(jwtUtils, never()).generateToken(any());
@@ -173,13 +167,12 @@ class AuthServiceTest {
 
     @Test
     void loginShouldReturn404WhenUserNotFound() {
-        Authentication mockAuth = mock(Authentication.class);
-        UserDetails mockUserDetails = mock(UserDetails.class);
-        when(mockUserDetails.getUsername()).thenReturn(registerRequest.getUsername());
-        when(mockAuth.getPrincipal()).thenReturn(mockUserDetails);
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(mockAuth);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authMock);
         when(userRepository.findByUsername(registerRequest.getUsername())).thenReturn(Optional.empty());
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> authService.login(loginRequest));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> authService.login(loginRequest));
+
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         Mockito.verify(jwtUtils, never()).generateToken(any());
     }
@@ -187,7 +180,10 @@ class AuthServiceTest {
     @Test
     void verifyShouldReturn404WhenUserNotFound() {
         when(userRepository.findByUsername(registerRequest.getUsername())).thenReturn(Optional.empty());
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> authService.verify(registerRequest.getUsername()));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> authService.verify(registerRequest.getUsername()));
+
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
 }
