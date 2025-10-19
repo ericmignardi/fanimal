@@ -32,14 +32,28 @@ export const MobileMenu = ({ mobileMenu, setMobileMenu }: MobileMenuProps) => {
         <div className="flex justify-between items-center border-b border-b-[var(--color-border)] p-2">
           <NavLink
             onClick={handleClick}
-            to="/explore"
+            to="/shelters"
             className={({ isActive }) =>
               isActive
                 ? "text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent)]/80"
                 : "hover:text-[var(--color-text)]/80 transition-colors"
             }
           >
-            Explore
+            Shelters
+          </NavLink>
+          <Search className="text-[var(--color-primary)]" />
+        </div>
+        <div className="flex justify-between items-center border-b border-b-[var(--color-border)] p-2">
+          <NavLink
+            onClick={handleClick}
+            to="/subscriptions"
+            className={({ isActive }) =>
+              isActive
+                ? "text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent)]/80"
+                : "hover:text-[var(--color-text)]/80 transition-colors"
+            }
+          >
+            Subscriptions
           </NavLink>
           <Search className="text-[var(--color-primary)]" />
         </div>

@@ -4,19 +4,35 @@ import { Home } from "./pages/Home.tsx";
 import { Header } from "./components/Header.tsx";
 import { Footer } from "./components/Footer.tsx";
 import { useAuth } from "./hooks/useAuth.tsx";
-import { Explore } from "./pages/Explore.tsx";
+import { Shelters } from "./pages/Shelters.tsx";
 import { Profile } from "./pages/Profile.tsx";
+import { useEffect } from "react";
+import { Loader } from "lucide-react";
+import { Subscriptions } from "./pages/Subscriptions.tsx";
 
 function App() {
-  const { user } = useAuth();
+  const { user, verify, isVerifying } = useAuth();
+
+  useEffect(() => {
+    verify();
+  }, []);
+
+  if (isVerifying) return <Loader className="animate-spin" />;
 
   return (
-    <div className="min-h-screen grid grid-rows-[auto_1fr_auto] grid-cols-1">
+    <>
       <Header />
       <main className="w-full">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/explore" element={<Explore />} />
+          <Route
+            path="/"
+            element={!user ? <Home /> : <Navigate to="/shelters" />}
+          />
+          <Route path="/shelters" element={<Shelters />} />
+          <Route
+            path="/subscriptions"
+            element={user ? <Subscriptions /> : <Navigate to="/" />}
+          />
           <Route
             path="/profile"
             element={user ? <Profile /> : <Navigate to="/" />}
@@ -25,7 +41,7 @@ function App() {
       </main>
       <Footer />
       <Toaster />
-    </div>
+    </>
   );
 }
 

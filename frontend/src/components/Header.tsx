@@ -12,7 +12,7 @@ export const Header = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative border-b border-b-[var(--color-border)]">
       <header className="h-20 bg-[var(--color-bg)] flex justify-between items-center p-4">
         <NavLink to="/">
           <img className="w-24 md:w-28 xl:w-32" src={logo} alt="fanimal logo" />
@@ -35,9 +35,19 @@ export const Header = () => {
                   ? "text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent)]/80"
                   : "hover:text-[var(--color-text)]/80 transition-colors"
               }
-              to="/explore"
+              to="/shelters"
             >
-              Explore
+              Shelters
+            </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                isActive
+                  ? "text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent)]/80"
+                  : "hover:text-[var(--color-text)]/80 transition-colors"
+              }
+              to="/subscriptions"
+            >
+              Subscriptions
             </NavLink>
             <NavLink
               className={({ isActive }) =>

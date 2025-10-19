@@ -16,22 +16,17 @@ public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
     @ManyToOne
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
-
     private double amount;
     private LocalDate startDate;
     private LocalDate endDate;
-
     @Column(name = "stripe_subscription_id")
     private String stripeSubscriptionId;
-
     @Enumerated(EnumType.STRING)
     private Tier tier;
 

@@ -52,6 +52,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers("/api/auth/**").permitAll();
                     req.requestMatchers("/api/shelters/**").permitAll();
+                    req.requestMatchers("/api/webhooks/stripe").permitAll();
 //                    req.requestMatchers("/api/users/**").permitAll();
 //                    req.requestMatchers("/api/subscriptions/**").permitAll();
                     req.anyRequest().authenticated();

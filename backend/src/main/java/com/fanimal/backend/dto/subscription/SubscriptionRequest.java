@@ -12,4 +12,6 @@ public class SubscriptionRequest {
     private ShelterRequest shelterRequest;
     @NotNull
     private Subscription.Tier tier;
+    @NotNull
+    private String paymentMethodId;
 }

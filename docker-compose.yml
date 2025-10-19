@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: fanimal_db
+    environment:
+      POSTGRES_DB: fanimal
+      POSTGRES_USER: fanimal_user
+      POSTGRES_PASSWORD: fanimal_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - fanimal:/var/lib/postgresql/data
+    networks:
+      - fanimal
+
+  backend:
+    build:
+      context: ./backend
+    container_name: fanimal_backend
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/fanimal
+      SPRING_DATASOURCE_USERNAME: fanimal_user
+      SPRING_DATASOURCE_PASSWORD: fanimal_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      JWT_SECRET: hHBC0bRnv1XJnooWuDlC5yAlcd9Np0pNmPXReR98hrg=
+      JWT_EXPIRATION: 360000
+    networks:
+      - fanimal
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: fanimal_frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    environment:
+      VITE_BACKEND_URL: http://backend:8080/api
+    networks:
+      - fanimal
+
+volumes:
+  fanimal:
+
+networks:
+  fanimal:

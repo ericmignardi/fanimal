@@ -24,6 +24,7 @@ public class SubscriptionResponse {
     private LocalDate startDate;
     private LocalDate endDate;
     private Tier tier;
+    private String clientSecret;
 
     public static SubscriptionResponse fromEntity(Subscription subscription) {
         return SubscriptionResponse.builder()

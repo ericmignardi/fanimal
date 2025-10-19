@@ -10,7 +10,7 @@ export const Hero = () => {
           <br />
           <span className="text-[var(--color-primary)]">animal</span> Shelters
         </h1>
-        <p className="text-base sm:text-lg md:text-xl font-medium text-[var(--color-text-secondary)]">
+        <p className="text-base sm:text-lg md:text-xl font-medium">
           Join fanimal and directly support animal shelters and humane
           societies. Subscribe to your favourite shelters at different tier
           levels to help them continue their vital work.

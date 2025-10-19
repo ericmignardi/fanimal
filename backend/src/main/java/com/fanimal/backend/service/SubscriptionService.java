@@ -9,10 +9,9 @@ import com.fanimal.backend.repository.SubscriptionRepository;
 import com.fanimal.backend.repository.UserRepository;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
+import com.stripe.model.PaymentMethod;
 import com.stripe.model.Subscription;
-import com.stripe.param.CustomerCreateParams;
-import com.stripe.param.SubscriptionCancelParams;
-import com.stripe.param.SubscriptionCreateParams;
+import com.stripe.param.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -48,38 +47,73 @@ public class SubscriptionService {
     }
 
     public SubscriptionResponse subscribe(UserDetails userDetails, SubscriptionRequest subscriptionRequest) throws StripeException {
+        // Fetch user and shelter
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         Shelter shelter = shelterRepository.findByName(subscriptionRequest.getShelterRequest().getName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter not found"));
+        // Get or create Stripe customer
         Customer customer = getOrCreateCustomer(userDetails);
-        // Create subscription in Stripe
-//        SubscriptionCreateParams params = SubscriptionCreateParams.builder()
-//                .setCustomer(customer.getId())
-//                .addItem(SubscriptionCreateParams.Item.builder()
-//                        .setPrice(shelter.getStripePriceId())
-//                        .build())
-//                .build();
-        SubscriptionCreateParams params = SubscriptionCreateParams.builder()
+        // Attach payment method to customer
+        PaymentMethod pm = PaymentMethod.retrieve(subscriptionRequest.getPaymentMethodId());
+        pm.attach(PaymentMethodAttachParams.builder()
+                .setCustomer(customer.getId())
+                .build());
+        // Set default payment method for invoices
+        customer.update(CustomerUpdateParams.builder()
+                .setInvoiceSettings(CustomerUpdateParams.InvoiceSettings.builder()
+                        .setDefaultPaymentMethod(subscriptionRequest.getPaymentMethodId())
+                        .build())
+                .build());
+        // Determine Stripe price ID based on selected tier
+        String priceId = switch (subscriptionRequest.getTier()) {
+            case BASIC -> shelter.getStripeBasicPriceId();
+            case STANDARD -> shelter.getStripeStandardPriceId();
+            case PREMIUM -> shelter.getStripePremiumPriceId();
+        };
+        // Create Stripe subscription
+        SubscriptionCreateParams subParams = SubscriptionCreateParams.builder()
                 .setCustomer(customer.getId())
                 .addItem(SubscriptionCreateParams.Item.builder()
-                        .setPrice(String.valueOf(subscriptionRequest.getTier().getPrice()))
-                        .setPlan(String.valueOf(subscriptionRequest.getTier()))
+                        .setPrice(priceId)
                         .build())
+                .setPaymentBehavior(SubscriptionCreateParams.PaymentBehavior.DEFAULT_INCOMPLETE)
+                .setPaymentSettings(
+                        SubscriptionCreateParams.PaymentSettings.builder()
+                                .setSaveDefaultPaymentMethod(
+                                        SubscriptionCreateParams.PaymentSettings.SaveDefaultPaymentMethod.ON_SUBSCRIPTION)
+                                .build())
+                .addExpand("latest_invoice.payment_intent") // important to get client secret
                 .build();
-        Subscription stripeSubscription = Subscription.create(params);
-        // Save subscription in database
+        Subscription stripeSubscription = Subscription.create(subParams);
+        // Extract client secret for frontend payment confirmation
+        var paymentIntent = (com.stripe.model.PaymentIntent)
+                stripeSubscription.getLatestInvoiceObject().getPaymentIntentObject();
+        String clientSecret = paymentIntent != null ? paymentIntent.getClientSecret() : null;
+        // Save subscription locally
         com.fanimal.backend.model.Subscription subscription = com.fanimal.backend.model.Subscription.builder()
                 .user(user)
                 .shelter(shelter)
                 .tier(subscriptionRequest.getTier())
                 .amount(subscriptionRequest.getTier().getPrice())
                 .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusMonths(1))
                 .stripeSubscriptionId(stripeSubscription.getId())
                 .build();
         subscriptionRepository.save(subscription);
-        return SubscriptionResponse.fromEntity(subscription);
+        // Return subscription response
+        return SubscriptionResponse.builder()
+                .id(subscription.getId())
+                .amount(subscription.getAmount())
+                .startDate(subscription.getStartDate())
+                .tier(subscription.getTier())
+                .shelter(shelter)
+                .user(user)
+                .clientSecret(clientSecret)
+                .build();
     }
+
 
     public List<SubscriptionResponse> findAllByUser(UserDetails userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername())
