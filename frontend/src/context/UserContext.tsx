@@ -1,39 +1,24 @@
-import { createContext } from "react";
-import type {
-  UpdateFormType,
-  UserContextType,
-  UserProviderPropsType,
-} from "../types/UserTypes";
+import type { UpdateFormType, UserProviderPropsType } from "../types/UserTypes";
 import { useState } from "react";
 import { axiosInstance } from "../services/api";
-import type { UserType } from "../types/AuthTypes";
 import toast from "react-hot-toast";
-
-export const UserContext = createContext<UserContextType>({
-  user: null,
-  getCurrentUser: async () => {},
-  updateCurrentUser: async () => {},
-  isGettingCurrentUser: false,
-  isUpdatingCurrentUser: false,
-});
+import { useAuth } from "../hooks/useAuth";
+import { UserContext } from "./UserContext";
 
 export function UserProvider({ children }: UserProviderPropsType) {
-  const [user, setUser] = useState<UserType | null>(null);
+  const { user, verify } = useAuth();
   const [isGettingCurrentUser, setIsGettingCurrentUser] =
     useState<boolean>(false);
   const [isUpdatingCurrentUser, setIsUpdatingCurrentUser] =
     useState<boolean>(false);
+  const [isFindingById, setIsFindingById] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const getCurrentUser = async () => {
     setIsGettingCurrentUser(true);
     try {
-      const response = await axiosInstance.get("/users/me");
-      if (response.status === 200) {
-        setUser(response.data);
-        toast.success("Get current user successful!");
-      } else {
-        toast.error("Get current user failed.");
-      }
+      await verify();
+      toast.success("Get current user successful!");
     } catch (error) {
       console.error("Error in getCurrentUser: ", error);
       if (error instanceof Error) {
@@ -51,7 +36,7 @@ export function UserProvider({ children }: UserProviderPropsType) {
     try {
       const response = await axiosInstance.put("/users/me", formData);
       if (response.status === 200) {
-        setUser(response.data);
+        await verify();
         toast.success("Update current user successful!");
       } else {
         toast.error("Update current user failed.");
@@ -68,14 +53,61 @@ export function UserProvider({ children }: UserProviderPropsType) {
     }
   };
 
+  const findById = async (id: number) => {
+    setIsFindingById(true);
+    try {
+      const response = await axiosInstance.get(`/users/${id}`);
+      if (response.status === 200) {
+        toast.success("Find by ID successful!");
+      } else {
+        toast.error("Find by ID failed.");
+      }
+    } catch (error) {
+      console.error("Error in findById: ", error);
+      if (error instanceof Error) {
+        toast.error(`Unable to find by ID: ${error.message}`);
+      } else {
+        toast.error("Unable to find by ID");
+      }
+    } finally {
+      setIsFindingById(false);
+    }
+  };
+
+  const deleteById = async (id: number) => {
+    setIsDeleting(true);
+    try {
+      const response = await axiosInstance.delete(`/users/${id}`);
+      if (response.status === 204) {
+        await verify();
+        toast.success("Delete successful!");
+      } else {
+        toast.error("Delete failed.");
+      }
+    } catch (error) {
+      console.error("Error in deleteById: ", error);
+      if (error instanceof Error) {
+        toast.error(`Unable to delete: ${error.message}`);
+      } else {
+        toast.error("Unable to delete");
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
         user,
         getCurrentUser,
         updateCurrentUser,
+        findById,
+        deleteById,
         isGettingCurrentUser,
         isUpdatingCurrentUser,
+        isFindingById,
+        isDeleting,
       }}
     >
       {children}

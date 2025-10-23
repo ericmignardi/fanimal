@@ -18,6 +18,7 @@ export type AuthContextType = {
   login: (formData: LoginFormType) => Promise<void>;
   verify: () => Promise<void>;
   logout: () => Promise<void>;
+  clearAuth: () => void;
   isRegistering: boolean;
   isLoggingIn: boolean;
   isVerifying: boolean;

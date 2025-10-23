@@ -1,34 +1,43 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { Home } from "./pages/Home.tsx";
-import { Header } from "./components/Header.tsx";
-import { Footer } from "./components/Footer.tsx";
-import { useAuth } from "./hooks/useAuth.tsx";
+import { Header } from "./components/navigation/Header.tsx";
+import { Footer } from "./components/navigation/Footer.tsx";
+import { useAuth } from "./hooks/useAuth.ts";
 import { Shelters } from "./pages/Shelters.tsx";
 import { Profile } from "./pages/Profile.tsx";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
 import { Subscriptions } from "./pages/Subscriptions.tsx";
+import { ShelterDetails } from "./pages/ShelterDetails.tsx";
 
 function App() {
-  const { user, verify, isVerifying } = useAuth();
+  const { user, verify, isVerifying, logout } = useAuth();
 
   useEffect(() => {
     verify();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isVerifying) return <Loader className="animate-spin" />;
+  if (isVerifying) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <>
-      <Header />
-      <main className="w-full">
+    <div className="flex flex-col min-h-screen max-w-[1440px] mx-auto">
+      <Header user={user} logout={logout} />
+      <main className="flex-1 p-8 mt-[80px] place-content-center">
         <Routes>
           <Route
             path="/"
             element={!user ? <Home /> : <Navigate to="/shelters" />}
           />
           <Route path="/shelters" element={<Shelters />} />
+          <Route path="/shelters/:id" element={<ShelterDetails />} />
           <Route
             path="/subscriptions"
             element={user ? <Subscriptions /> : <Navigate to="/" />}
@@ -40,8 +49,8 @@ function App() {
         </Routes>
       </main>
       <Footer />
-      <Toaster />
-    </>
+      <Toaster position="top-right" />
+    </div>
   );
 }
 

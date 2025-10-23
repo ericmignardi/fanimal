@@ -1,24 +1,13 @@
-import { createContext, useState } from "react";
-import { axiosInstance } from "../services/api.ts";
+import { useState, useEffect } from "react";
+import { axiosInstance, setTokenGetter } from "../services/api";
 import toast from "react-hot-toast";
 import type {
-  AuthContextType,
   RegisterFormType,
   LoginFormType,
   AuthProviderPropsType,
   UserType,
-} from "../types/AuthTypes.ts";
-
-export const AuthContext = createContext<AuthContextType>({
-  user: null,
-  register: async () => {},
-  login: async () => {},
-  verify: async () => {},
-  logout: async () => {},
-  isRegistering: false,
-  isLoggingIn: false,
-  isVerifying: false,
-});
+} from "../types/AuthTypes";
+import { AuthContext } from "./AuthContext";
 
 export function AuthProvider({ children }: AuthProviderPropsType) {
   const [user, setUser] = useState<UserType | null>(null);
@@ -26,13 +15,18 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
 
+  const [token, setToken] = useState<string | null>(() => {
+    return localStorage.getItem("token");
+  });
+
+  useEffect(() => {
+    setTokenGetter(() => token);
+  }, [token]);
+
   const register = async (formData: RegisterFormType) => {
     setIsRegistering(true);
     try {
-      const response = await axiosInstance.post<{ user: UserType }>(
-        "/auth/register",
-        formData
-      );
+      const response = await axiosInstance.post("/auth/register", formData);
       if (response.status === 201) {
         setUser(response.data.user);
         toast.success("Registration successful!");
@@ -54,12 +48,14 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
   const login = async (formData: LoginFormType) => {
     setIsLoggingIn(true);
     try {
-      const response = await axiosInstance.post<{ user: UserType }>(
-        "/auth/login",
-        formData
-      );
+      const response = await axiosInstance.post("/auth/login", formData);
       if (response.status === 200) {
-        setUser(response.data.user);
+        const { token: newToken, user } = response.data;
+        if (newToken) {
+          setToken(newToken);
+          localStorage.setItem("token", newToken);
+        }
+        setUser(user);
         toast.success("Login successful!");
       } else {
         toast.error("Login failed.");
@@ -81,17 +77,21 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
     try {
       const response = await axiosInstance.get("/auth/verify");
       if (response.status === 200) {
-        setUser(response.data.user);
-        toast.success("Verify successful!");
+        const { token: newToken, user } = response.data;
+        if (newToken) {
+          setToken(newToken);
+          localStorage.setItem("token", newToken);
+        }
+        setUser(user);
       } else {
-        toast.error("Verify failed.");
+        setToken(null);
+        localStorage.removeItem("token");
+        setUser(null);
       }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error(`Unable to verify: ${error.message}`);
-      } else {
-        toast.error("Unable to verify");
-      }
+    } catch {
+      setToken(null);
+      localStorage.removeItem("token");
+      setUser(null);
     } finally {
       setIsVerifying(false);
     }
@@ -101,7 +101,6 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
     try {
       const response = await axiosInstance.post("/auth/logout");
       if (response.status === 200) {
-        setUser(null);
         toast.success("Logout successful!");
       } else {
         toast.error("Logout failed.");
@@ -113,7 +112,18 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
       } else {
         toast.error("Unable to logout");
       }
+    } finally {
+      // Always clear local auth state, even if backend call fails
+      setToken(null);
+      localStorage.removeItem("token");
+      setUser(null);
     }
+  };
+
+  const clearAuth = () => {
+    setToken(null);
+    localStorage.removeItem("token");
+    setUser(null);
   };
 
   return (
@@ -124,6 +134,7 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
         login,
         verify,
         logout,
+        clearAuth,
         isRegistering,
         isLoggingIn,
         isVerifying,

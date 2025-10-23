@@ -16,11 +16,18 @@ COPY .env .env
 # Build production assets
 RUN npm run build
 
-# Stage 2: Serve with nginx
-FROM nginx:alpine
+# Stage 2: Development server
+FROM node:20-alpine
 
-COPY --from=build /app/dist /usr/share/nginx/html
+WORKDIR /app
 
-EXPOSE 3000
+# Copy package files and install
+COPY package.json package-lock.json* ./
+RUN npm install
 
-CMD ["nginx", "-g", "daemon off;"]
+# Copy source code
+COPY . .
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
