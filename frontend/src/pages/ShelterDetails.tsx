@@ -34,7 +34,7 @@ export const ShelterDetails = () => {
       {/* Image */}
       <div className="relative">
         <img className="w-full rounded-xl" src={hero} alt={shelter?.name} />
-        <h1 className="absolute bottom-2 left-4 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[var(--color-bg)]">
+        <h1 className="absolute bottom-2 left-4 text-xl font-extrabold text-[var(--color-bg)] sm:text-2xl md:text-3xl lg:text-4xl">
           {shelter?.name}
         </h1>
       </div>
@@ -42,7 +42,7 @@ export const ShelterDetails = () => {
       {/* Tabs */}
       <div className="flex flex-col justify-center gap-4">
         {/* Tabs Header */}
-        <div className="border-b border-b-[var(--color-border)] flex items-center gap-2">
+        <div className="flex items-center gap-2 border-b border-b-[var(--color-border)]">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -61,7 +61,7 @@ export const ShelterDetails = () => {
 
         {/* Tabs Body */}
         <div className="flex flex-col justify-center gap-1">
-          <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold">
+          <h2 className="text-sm font-semibold sm:text-base md:text-lg lg:text-xl">
             About
           </h2>
           {isFindingById ? (

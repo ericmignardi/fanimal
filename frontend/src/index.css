@@ -1,29 +1,26 @@
-@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
 @import "tailwindcss";
 
 :root {
-  --font-family: "Raleway";
-  --color-bg: #fafaff;
-  --color-text: #2d2d2d;
-  --color-primary: #4ecdc4;
-  --color-accent: #ff6b6b;
-  --color-success: #38b000;
-  --color-error: #e63946;
-  --color-border: #e5e7eb;
+  --font-family: "Space Grotesk";
 }
 
 body {
   font-family: var(--font-family), sans-serif;
-  color: var(--color-text);
-  background-color: var(--color-bg);
+  color: var(--color-black);
+  background-color: var(--color-white);
+}
+
+* {
+  border-color: var(--color-black);
 }
 
 @layer components {
   .btn-primary {
-    @apply text-sm sm:text-base font-semibold bg-[var(--color-text)]/10 rounded-4xl px-4 py-2 hover:bg-[var(--color-text)]/20 transition cursor-pointer;
+    @apply inline-flex h-15 cursor-pointer items-center justify-center border-2 bg-purple-300 px-8 py-4 text-sm font-bold shadow-[4px_4px_0px_0px_#000] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000];
   }
   .btn-secondary {
-    @apply text-sm sm:text-base font-semibold text-[var(--color-bg)] bg-[var(--color-primary)] rounded-4xl px-4 py-2 hover:bg-[var(--color-primary)]/80 transition cursor-pointer;
+    @apply inline-flex h-15 cursor-pointer items-center justify-center border-2 bg-green-300 px-8 py-4 text-sm font-bold shadow-[4px_4px_0px_0px_#000] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000];
   }
 }
 
@@ -31,6 +28,6 @@ body {
 
 /*}*/
 
-/*@layer base {*/
-
-/*}*/
+/* @layer base {
+  
+} */

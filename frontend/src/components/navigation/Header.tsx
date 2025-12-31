@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import logo from "../../assets/logo.svg";
+import { Menu, PawPrint, X } from "lucide-react";
 import { MobileMenu } from "./MobileMenu";
 import type { UserType } from "../../types/AuthTypes";
 
@@ -26,71 +25,59 @@ export const Header = ({ user, logout }: HeaderProps) => {
   };
 
   const navLinks = [
-    { to: "/", name: "Home" },
-    { to: "/shelters", name: "Shelters" },
-    { to: "/subscriptions", name: "Subscriptions" },
+    { to: "/shelters", name: "Find Shelters" },
+    { to: "#how-it-works", name: "How It Works" },
   ];
 
   return (
-    <header className="fixed top-0 left-0 w-full border-b border-b-[var(--color-border)] bg-[var(--color-bg)] z-50">
-      <div className="max-w-[1440px] mx-auto h-16 md:h-20 flex justify-between items-center p-4">
+    <header className="fixed top-0 right-0 left-0 z-50 w-full border-b-2 bg-white">
+      <div className="relative mx-auto flex max-w-[1440px] items-center justify-between p-4">
         {/* Logo */}
-        <NavLink to="/" aria-label="Fanimal Home">
-          <img className="w-24 md:w-28 lg:w-32" src={logo} alt="Fanimal logo" />
-        </NavLink>
+        <div className="flex items-center gap-2">
+          <PawPrint size={36} />
+          <NavLink to={"/"}>
+            {" "}
+            <h1 className="text-2xl font-bold uppercase">fanimal</h1>
+          </NavLink>
+        </div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-6 text-base font-normal">
-          {navLinks.map(({ to, name }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                isActive
-                  ? "text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent)]/80"
-                  : "hover:text-[var(--color-text)]/80 transition-colors"
-              }
-            >
-              {name}
-            </NavLink>
-          ))}
-
-          {/* Auth Buttons */}
-          <div className="flex items-center gap-4">
-            {!user ? (
-              <>
-                <NavLink to="/" className="btn-primary">
-                  Log In
-                </NavLink>
-                <NavLink to="/" className="btn-secondary">
-                  Sign Up
-                </NavLink>
-              </>
-            ) : (
-              <>
-                <NavLink to="/profile" className="btn-primary">
-                  Profile
-                </NavLink>
-                <button onClick={handleClick} className="btn-secondary">
-                  Logout
-                </button>
-              </>
-            )}
-          </div>
+        {/* Navigation */}
+        <nav className="hidden md:flex">
+          <ul className="flex items-center gap-8 text-sm font-semibold">
+            {navLinks.map((link) => (
+              <li key={link.name}>
+                <NavLink to={link.to}>{link.name}</NavLink>
+              </li>
+            ))}
+          </ul>
         </nav>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          onClick={toggleMenu}
-          className="lg:hidden cursor-pointer"
-          aria-label="Toggle menu"
-        >
-          {mobileMenu ? (
-            <X className="h-5 w-5 md:h-6 md:w-6" />
+        {/* Actions */}
+        <div className="hidden items-center gap-4 md:flex">
+          {user ? (
+            <>
+              <button className="btn-primary">Profile</button>
+              <button onClick={handleClick} className="btn-secondary">
+                Logout
+              </button>
+            </>
           ) : (
-            <Menu className="h-5 w-5 md:h-6 md:w-6" />
+            <>
+              <button className="btn-primary h-10">Login</button>
+              <button className="btn-secondary h-10">Register</button>
+            </>
           )}
-        </button>
+        </div>
+
+        {/* Mobile Menu Toggle */}
+        <div className="flex md:hidden">
+          <button
+            onClick={toggleMenu}
+            className="translate-y-[2px] cursor-pointer border-2 p-2 transition-all hover:translate-x-[2px] hover:shadow-[2px_2px_0px_0px_#000]"
+          >
+            {mobileMenu ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Navigation */}

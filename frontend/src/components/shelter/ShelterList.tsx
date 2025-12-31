@@ -11,15 +11,15 @@ export const ShelterList = ({
 }: ShelterListPropsType) => {
   if (isFindingAll)
     return (
-      <div className="flex justify-center items-center h-24">
-        <Loader className="animate-spin w-8 h-8" />
+      <div className="flex h-24 items-center justify-center">
+        <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
 
   if (!shelters || shelters.length === 0) return <p>No shelters found.</p>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-center items-center gap-4">
+    <div className="grid grid-cols-1 items-center justify-center gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {shelters.map((shelter: ShelterType) => (
         <ShelterCard key={shelter.id} shelter={shelter} />
       ))}

@@ -23,10 +23,10 @@ export const ProfileCard = ({
   };
 
   return (
-    <div className="flex flex-col justify-center items-center gap-1 relative">
+    <div className="relative flex flex-col items-center justify-center gap-1">
       <button
         onClick={handleClick}
-        className="rounded-full border-2 border-[var(--color-primary)] cursor-pointer hover:opacity-90 overflow-clip"
+        className="cursor-pointer overflow-clip rounded-full border-2 border-[var(--color-primary)] hover:opacity-90"
       >
         <img
           className="h-20 hover:scale-110"
@@ -39,12 +39,12 @@ export const ProfileCard = ({
         @{user?.username}
       </span>
       {updateModal && (
-        <div className="absolute backdrop-blur-2xl border border-[var(--color-border)] h-full rounded-2xl p-4 flex flex-col justify-center gap-2">
-          <h2 className="text-lg font-semibold text-center">Update User</h2>
+        <div className="absolute flex h-full flex-col justify-center gap-2 rounded-2xl border border-[var(--color-border)] p-4 backdrop-blur-2xl">
+          <h2 className="text-center text-lg font-semibold">Update User</h2>
           <form onSubmit={handleSubmit}>
             <label htmlFor="name">Name</label>
             <input
-              className="border border-[var(--color-border)] rounded-2xl p-2 focus:border-none focus:outline focus:outline-[var(--color-primary)]"
+              className="rounded-2xl border border-[var(--color-border)] p-2 focus:border-none focus:outline focus:outline-[var(--color-primary)]"
               type="text"
               name="name"
               id="name"

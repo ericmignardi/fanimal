@@ -1,24 +1,82 @@
-import { Facebook, Instagram, Twitter } from "lucide-react";
+import { PawPrint } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export const Footer = () => {
-  const socialLinks = [
-    { to: "/", icon: Twitter },
-    { to: "/", icon: Instagram },
-    { to: "/", icon: Facebook },
-  ];
+interface FooterLink {
+  to: string;
+  label: string;
+}
 
+interface FooterSection {
+  title: string;
+  links: FooterLink[];
+}
+
+const footerLinks: FooterSection[] = [
+  {
+    title: "Platform",
+    links: [
+      { to: "/shelters", label: "Browse Shelters" },
+      { to: "#", label: "Gift Cards" },
+    ],
+  },
+  {
+    title: "Shelters",
+    links: [
+      { to: "#", label: "Partner With Us" },
+      { to: "#", label: "Login" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { to: "#", label: "Privacy Policy" },
+      { to: "#", label: "Terms" },
+    ],
+  },
+];
+
+const FooterColumn = ({ title, links }: FooterSection) => (
+  <div className="flex flex-col justify-center gap-4">
+    <h4 className="text-xl font-bold text-yellow-400 uppercase">{title}</h4>
+    <ul className="flex flex-col gap-2 text-sm font-medium">
+      {links.map((link) => (
+        <li key={link.label}>
+          <Link to={link.to}>{link.label}</Link>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
+export const Footer = () => {
   return (
-    <footer className="h-20 md:h-12 bg-[var(--color-bg)] border-t border-t-[var(--color-border)] flex flex-col md:flex-row justify-center md:justify-between items-center gap-4 md:gap-0 p-4 z-50">
-      <div className="text-sm sm:text-base md:text-base font-normal text-[var(--color-text-secondary)] text-center md:text-left">
-        &copy; {new Date().getFullYear()} fanimal. All rights reserved.
-      </div>
-      <div className="flex items-center gap-4 text-[var(--color-accent)]">
-        {socialLinks.map(({ to, icon: Icon }, i) => (
-          <Link key={i} className="hover:rotate-6 transition-transform" to={to}>
-            <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
-          </Link>
-        ))}
+    <footer className="w-full bg-black pt-16 pb-8 text-white">
+      <div className="mx-auto flex max-w-7xl flex-col justify-center gap-12 px-4">
+        {/* Top */}
+        <div className="grid grid-cols-1 gap-12 border-b-2 border-b-gray-800 pb-12 md:grid-cols-4">
+          {/* Brand */}
+          <div className="flex flex-col justify-center gap-4">
+            <div className="flex items-center gap-2">
+              <PawPrint className="text-yellow-400" size={36} />
+              <span className="text-2xl font-bold uppercase">fanimal</span>
+            </div>
+            <p className="text-sm text-gray-400">
+              Connecting animal lovers with the rescues that need them most.
+            </p>
+          </div>
+
+          {/* Link Columns */}
+          {footerLinks.map((section) => (
+            <FooterColumn key={section.title} {...section} />
+          ))}
+        </div>
+
+        {/* Bottom */}
+        <div>
+          <span className="text-xs text-gray-500">
+            &copy; {new Date().getFullYear()} fanimal
+          </span>
+        </div>
       </div>
     </footer>
   );

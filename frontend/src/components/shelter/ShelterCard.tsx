@@ -5,13 +5,13 @@ export const ShelterCard = ({ shelter }: { shelter: ShelterType }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col justify-center gap-4 p-4 shadow-md rounded-xl">
+    <div className="flex flex-col justify-center gap-4 rounded-xl p-4 shadow-md">
       <img src="https://placehold.co/400x300" alt={`${shelter.name}`} />
       <div>
-        <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold">
+        <h2 className="text-sm font-semibold sm:text-base md:text-lg lg:text-xl">
           {shelter.name}
         </h2>
-        <p className="text-xs sm:text-sm md:text-base text-[var(--color-text)]/50">
+        <p className="text-xs text-[var(--color-text)]/50 sm:text-sm md:text-base">
           {shelter.description}
         </p>
       </div>

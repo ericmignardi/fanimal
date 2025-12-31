@@ -5,7 +5,7 @@ export const Profile = () => {
   const { user, updateCurrentUser, isUpdatingCurrentUser } = useUser();
 
   return (
-    <section className="h-full flex justify-center items-center p-4">
+    <section className="flex h-full items-center justify-center p-4">
       <ProfileCard
         user={user}
         updateCurrentUser={updateCurrentUser}

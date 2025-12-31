@@ -29,7 +29,7 @@ export const MobileMenu = ({
   ];
 
   return (
-    <div className="absolute top-0 right-0 w-[75%] h-screen bg-[var(--color-bg)] p-12 z-50 shadow-lg">
+    <div className="absolute top-0 right-0 z-50 h-screen w-[75%] bg-[var(--color-bg)] p-12 shadow-lg">
       <nav className="flex flex-col gap-6 text-base font-normal">
         {navLinks.map(({ to, name, icon: Icon }) => (
           <NavLink
@@ -37,9 +37,9 @@ export const MobileMenu = ({
             to={to}
             onClick={toggleMenu}
             className={({ isActive }) =>
-              `flex items-center justify-between gap-4 p-2 rounded-md transition-colors hover:bg-[var(--color-text)]/10 ${
+              `flex items-center justify-between gap-4 rounded-md p-2 transition-colors hover:bg-[var(--color-text)]/10 ${
                 isActive
-                  ? "text-[var(--color-accent)] font-semibold"
+                  ? "font-semibold text-[var(--color-accent)]"
                   : "hover:text-[var(--color-text)]/80"
               }`
             }
@@ -50,7 +50,7 @@ export const MobileMenu = ({
         ))}
 
         {/* Auth Buttons */}
-        <div className="flex flex-col gap-4 pt-8 border-t border-[var(--color-border)] mt-4">
+        <div className="mt-4 flex flex-col gap-4 border-t border-[var(--color-border)] pt-8">
           {!user ? (
             <>
               <NavLink

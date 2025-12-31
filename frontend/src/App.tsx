@@ -21,16 +21,16 @@ function App() {
 
   if (isVerifying) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader className="w-8 h-8 animate-spin" />
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader className="h-8 w-8 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen max-w-[1440px] mx-auto">
+    <div className="flex min-h-screen flex-col">
       <Header user={user} logout={logout} />
-      <main className="flex-1 p-8 mt-[80px] place-content-center">
+      <main className="flex-1 pt-[72px]">
         <Routes>
           <Route
             path="/"

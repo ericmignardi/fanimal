@@ -78,12 +78,12 @@ export const AuthForm = () => {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col justify-center gap-8 rounded-xl shadow-2xl p-8">
+      <div className="flex flex-col justify-center gap-8 rounded-xl p-8 shadow-2xl">
         <div className="text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-semibold leading-snug">
+          <h2 className="text-2xl leading-snug font-semibold sm:text-3xl md:text-3xl lg:text-4xl">
             {registerMode ? "Create an account" : "Welcome back!"}
           </h2>
-          <p className="text-sm sm:text-base md:text-base lg:text-lg font-normal leading-relaxed mt-2">
+          <p className="mt-2 text-sm leading-relaxed font-normal sm:text-base md:text-base lg:text-lg">
             Start supporting shelters today!
           </p>
         </div>
@@ -98,7 +98,7 @@ export const AuthForm = () => {
               <div key={id} className="flex flex-col justify-center gap-1">
                 <label
                   htmlFor={id}
-                  className="text-sm sm:text-base md:text-base font-semibold"
+                  className="text-sm font-semibold sm:text-base md:text-base"
                 >
                   {label}
                 </label>
@@ -116,7 +116,7 @@ export const AuthForm = () => {
             ))}
           {error && (
             <div role="alert" aria-live="polite">
-              <p className="text-[var(--color-error)] text-sm sm:text-base font-medium mt-1">
+              <p className="mt-1 text-sm font-medium text-[var(--color-error)] sm:text-base">
                 {error}
               </p>
             </div>
@@ -131,12 +131,12 @@ export const AuthForm = () => {
                 ? "Signing up..."
                 : "Sign Up"
               : isLoggingIn
-              ? "Logging in..."
-              : "Log In"}
+                ? "Logging in..."
+                : "Log In"}
           </button>
         </form>
 
-        <div className="text-center text-sm sm:text-base font-normal mt-2">
+        <div className="mt-2 text-center text-sm font-normal sm:text-base">
           {registerMode ? (
             <p>
               Already have an account?{" "}
@@ -144,7 +144,7 @@ export const AuthForm = () => {
                 type="button"
                 onClick={toggleMode}
                 disabled={isLoading}
-                className="text-[var(--color-primary)] font-semibold hover:underline"
+                className="font-semibold text-[var(--color-primary)] hover:underline"
               >
                 Log in
               </button>
@@ -156,7 +156,7 @@ export const AuthForm = () => {
                 type="button"
                 onClick={toggleMode}
                 disabled={isLoading}
-                className="text-[var(--color-primary)] font-semibold hover:underline"
+                className="font-semibold text-[var(--color-primary)] hover:underline"
               >
                 Sign up
               </button>
