@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { UserType } from "./AuthTypes";
+import type { LucideIcon } from "lucide-react";
 
 export type ShelterType = {
   id: number;
@@ -43,4 +44,15 @@ export type ShelterProviderPropsType = {
 export type ShelterListPropsType = {
   shelters: ShelterType[] | null;
   isFindingAll: boolean;
+};
+
+export type ShelterCardType = {
+  verified: boolean;
+  image: LucideIcon;
+  imageBackground: string;
+  title: string;
+  badge: string | null;
+  description: string;
+  tags: string[];
+  supporters: number;
 };

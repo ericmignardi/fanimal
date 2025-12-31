@@ -1,19 +1,19 @@
 import { useEffect } from "react";
-import { ShelterList } from "../components/shelter/ShelterList";
-import { useShelter } from "../hooks/useShelter";
+// import { useShelter } from "../hooks/useShelter";
 import { ShelterHeader } from "../components/shelter/ShelterHeader";
+import { ShelterContent } from "../components/shelter/ShelterContent";
 
 export const Shelters = () => {
-  const { shelters, isFindingAll, findAll } = useShelter();
+  // const { shelters, isFindingAll, findAll } = useShelter();
 
   useEffect(() => {
-    findAll();
+    // findAll();
   }, []);
 
   return (
     <section>
       <ShelterHeader />
-      <ShelterList shelters={shelters} isFindingAll={isFindingAll} />
+      <ShelterContent />
     </section>
   );
 };

@@ -5,10 +5,8 @@ import { Header } from "./components/navigation/Header.tsx";
 import { Footer } from "./components/navigation/Footer.tsx";
 import { useAuth } from "./hooks/useAuth.ts";
 import { Shelters } from "./pages/Shelters.tsx";
-import { Profile } from "./pages/Profile.tsx";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
-import { Subscriptions } from "./pages/Subscriptions.tsx";
 import { ShelterDetails } from "./pages/ShelterDetails.tsx";
 
 function App() {
@@ -38,14 +36,6 @@ function App() {
           />
           <Route path="/shelters" element={<Shelters />} />
           <Route path="/shelters/:id" element={<ShelterDetails />} />
-          <Route
-            path="/subscriptions"
-            element={user ? <Subscriptions /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/profile"
-            element={user ? <Profile /> : <Navigate to="/" />}
-          />
         </Routes>
       </main>
       <Footer />
