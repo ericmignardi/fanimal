@@ -1,7 +1,9 @@
 import { ArrowRight } from "lucide-react";
 import type { ShelterCardType } from "../../types/ShelterTypes";
+import { useNavigate } from "react-router-dom";
 
 export const ShelterCard = ({
+  id,
   verified,
   image: Icon,
   imageBackground,
@@ -11,8 +13,17 @@ export const ShelterCard = ({
   tags,
   supporters,
 }: ShelterCardType) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/shelters/${id}`);
+  };
+
   return (
-    <div className="relative flex h-full flex-col border-2 shadow-[4px_4px_0px_0px_#000]">
+    <div
+      onClick={handleClick}
+      className="relative flex h-full cursor-pointer flex-col border-2 shadow-[4px_4px_0px_0px_#000]"
+    >
       {/* Badge */}
       {verified && (
         <div className="absolute top-3 left-3 flex items-center gap-1 border-2 bg-white p-2">

@@ -47,6 +47,7 @@ export type ShelterListPropsType = {
 };
 
 export type ShelterCardType = {
+  id: string;
   verified: boolean;
   image: LucideIcon;
   imageBackground: string;

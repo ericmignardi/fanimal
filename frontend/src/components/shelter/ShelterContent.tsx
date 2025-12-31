@@ -4,6 +4,7 @@ import type { ShelterCardType } from "../../types/ShelterTypes";
 
 const shelterCards: ShelterCardType[] = [
   {
+    id: "paws-and-claws",
     verified: true,
     image: Smile,
     imageBackground: "bg-blue-100",
@@ -15,6 +16,7 @@ const shelterCards: ShelterCardType[] = [
     supporters: 1240,
   },
   {
+    id: "the-cats-meow",
     verified: false,
     image: Cat,
     imageBackground: "bg-pink-100",
@@ -26,6 +28,7 @@ const shelterCards: ShelterCardType[] = [
     supporters: 850,
   },
   {
+    id: "reptile-heaven",
     verified: false,
     image: Turtle,
     imageBackground: "bg-green-100",
@@ -37,6 +40,7 @@ const shelterCards: ShelterCardType[] = [
     supporters: 320,
   },
   {
+    id: "second-chance-farm",
     verified: false,
     image: Bird,
     imageBackground: "bg-yellow-100",
@@ -81,7 +85,8 @@ export const ShelterContent = () => {
           {/* Card */}
           {shelterCards.map((item) => (
             <ShelterCard
-              key={item.title}
+              key={item.id}
+              id={item.id}
               verified={item.verified}
               image={item.image}
               imageBackground={item.imageBackground}
