@@ -57,7 +57,11 @@ export const Footer = () => {
           {/* Brand */}
           <div className="flex flex-col justify-center gap-4">
             <div className="flex items-center gap-2">
-              <PawPrint className="text-yellow-400" size={36} />
+              <PawPrint
+                className="text-yellow-400"
+                size={36}
+                aria-hidden="true"
+              />
               <span className="text-2xl font-bold uppercase">fanimal</span>
             </div>
             <p className="text-sm text-gray-400">
@@ -73,9 +77,9 @@ export const Footer = () => {
 
         {/* Bottom */}
         <div>
-          <span className="text-xs text-gray-500">
+          <small className="text-xs text-gray-500">
             &copy; {new Date().getFullYear()} fanimal
-          </span>
+          </small>
         </div>
       </div>
     </footer>

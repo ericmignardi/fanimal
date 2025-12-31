@@ -22,7 +22,7 @@ export const ShelterHeader = () => {
           {/* Input */}
           <div className="flex items-center gap-4">
             <div className="flex flex-1 items-center gap-2 border-2 bg-white p-4 shadow-[4px_4px_0px_0px_#000]">
-              <Search />
+              <Search aria-hidden="true" />
               <input
                 type="text"
                 placeholder="Search by name, city, or zip code..."
@@ -44,15 +44,20 @@ export const ShelterHeader = () => {
                   className="flex cursor-pointer items-center gap-1 border-2 bg-white px-4 py-1 shadow-[2px_2px_0px_0px_#000]"
                 >
                   <span className="text-sm font-semibold">{filter.label}</span>
-                  <span>{filter.emoji}</span>
+                  <span aria-hidden="true">{filter.emoji}</span>
                 </button>
               ))}
             </div>
 
-            <span className="mx-2 hidden h-8 w-[1px] bg-black sm:block">|</span>
+            <span
+              className="mx-2 hidden h-8 w-[1px] bg-black sm:block"
+              aria-hidden="true"
+            >
+              |
+            </span>
 
             <button className="flex items-center gap-1 border-2 bg-red-400 px-4 py-1 shadow-[2px_2px_0px_0px_#000]">
-              <Lightbulb />
+              <Lightbulb aria-hidden="true" />
               <span className="text-sm font-semibold">Urgent Needs</span>
             </button>
           </div>

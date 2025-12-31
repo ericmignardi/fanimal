@@ -34,7 +34,7 @@ export const Header = ({ user, logout }: HeaderProps) => {
       <div className="relative mx-auto flex max-w-[1440px] items-center justify-between p-4">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <PawPrint size={36} />
+          <PawPrint size={36} aria-hidden="true" />
           <NavLink to={"/"}>
             {" "}
             <h1 className="text-2xl font-bold uppercase">fanimal</h1>
@@ -69,13 +69,17 @@ export const Header = ({ user, logout }: HeaderProps) => {
           )}
         </div>
 
-        {/* Mobile Menu Toggle */}
         <div className="flex md:hidden">
           <button
             onClick={toggleMenu}
+            aria-label={mobileMenu ? "Close menu" : "Open menu"}
             className="translate-y-[2px] cursor-pointer border-2 p-2 transition-all hover:translate-x-[2px] hover:shadow-[2px_2px_0px_0px_#000]"
           >
-            {mobileMenu ? <X /> : <Menu />}
+            {mobileMenu ? (
+              <X aria-hidden="true" />
+            ) : (
+              <Menu aria-hidden="true" />
+            )}
           </button>
         </div>
       </div>

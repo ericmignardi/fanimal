@@ -12,19 +12,25 @@ export const ShelterDetailsContent = () => {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-4">
             <div className="flex flex-col items-center justify-center border-2 bg-white px-12 py-8 shadow-[4px_4px_0px_0px_#000]">
-              <span className="text-3xl font-bold">852</span>
+              <data value="852" className="text-3xl font-bold">
+                852
+              </data>
               <span className="text-xs font-bold text-gray-500 uppercase">
                 Lives Saved
               </span>
             </div>
             <div className="flex flex-col items-center justify-center border-2 bg-white px-12 py-8 shadow-[4px_4px_0px_0px_#000]">
-              <span className="text-3xl font-bold">45</span>
+              <data value="45" className="text-3xl font-bold">
+                45
+              </data>
               <span className="text-xs font-bold text-gray-500 uppercase">
                 In Care
               </span>
             </div>
             <div className="flex flex-col items-center justify-center border-2 bg-white px-12 py-8 shadow-[4px_4px_0px_0px_#000]">
-              <span className="text-3xl font-bold">2018</span>
+              <data value="2018" className="text-3xl font-bold">
+                2018
+              </data>
               <span className="text-xs font-bold text-gray-500 uppercase">
                 Founded
               </span>
@@ -34,7 +40,12 @@ export const ShelterDetailsContent = () => {
           {/* Mission */}
           <div className="flex flex-col justify-center gap-4">
             <div className="flex items-center gap-4">
-              <span className="text-4xl font-bold text-yellow-400">|</span>
+              <span
+                className="text-4xl font-bold text-yellow-400"
+                aria-hidden="true"
+              >
+                |
+              </span>
               <h2 className="text-2xl font-semibold uppercase">Our Mission</h2>
             </div>
             <p className="text-base font-medium text-slate-800">
@@ -53,7 +64,12 @@ export const ShelterDetailsContent = () => {
           {/* Meet The Pack */}
           <div className="flex flex-col justify-center gap-4">
             <div className="flex items-center gap-4">
-              <span className="text-4xl font-bold text-pink-400">|</span>
+              <span
+                className="text-4xl font-bold text-pink-400"
+                aria-hidden="true"
+              >
+                |
+              </span>
               <div className="flex w-full items-center justify-between">
                 <h2 className="text-2xl font-semibold uppercase">
                   Meet The Pack
@@ -116,7 +132,7 @@ export const ShelterDetailsContent = () => {
               </div>
             </div>
             <div className="flex items-center gap-2 border-2 p-4">
-              <DollarSign className="size-4 text-gray-600" />
+              <DollarSign className="size-4 text-gray-600" aria-hidden="true" />
               <input
                 className="w-full focus:outline-none"
                 type="number"
@@ -143,12 +159,12 @@ export const ShelterDetailsContent = () => {
             </div>
             <button className="btn-primary flex items-center gap-2 text-lg">
               Start Donating
-              <Heart />
+              <Heart aria-hidden="true" />
             </button>
-            <span className="text-center text-xs text-gray-500">
+            <small className="text-center text-xs text-gray-500">
               100% of donations go directly to the shelter minus standard
               processing fees.
-            </span>
+            </small>
           </div>
 
           {/* Recent Heroes */}

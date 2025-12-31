@@ -20,14 +20,17 @@ export const ShelterCard = ({
   };
 
   return (
-    <div
+    <article
       onClick={handleClick}
       className="relative flex h-full cursor-pointer flex-col border-2 shadow-[4px_4px_0px_0px_#000]"
     >
       {/* Badge */}
       {verified && (
         <div className="absolute top-3 left-3 flex items-center gap-1 border-2 bg-white p-2">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-green-500"></span>
+          <span
+            className="h-2 w-2 animate-pulse rounded-full bg-green-500"
+            aria-hidden="true"
+          ></span>
           <span className="text-xs font-bold">Verified</span>
         </div>
       )}
@@ -36,7 +39,7 @@ export const ShelterCard = ({
       <div
         className={`flex items-center justify-center ${imageBackground} p-12`}
       >
-        <Icon size={130} />
+        <Icon size={130} aria-hidden="true" />
       </div>
 
       {/* Details */}
@@ -65,10 +68,10 @@ export const ShelterCard = ({
           <span className="text-xs text-gray-800">{supporters}</span>
           <div className="flex items-center gap-1">
             <span className="text-sm font-semibold">View Details</span>
-            <ArrowRight />
+            <ArrowRight aria-hidden="true" />
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 };

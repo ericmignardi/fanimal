@@ -20,7 +20,7 @@ const HowItWorksCard = ({
       >
         <Icon className="text-3xl" />
       </div>
-      <span className="text-xl font-semibold">{title}</span>
+      <h3 className="text-xl font-semibold">{title}</h3>
       <p>{description}</p>
     </div>
   );

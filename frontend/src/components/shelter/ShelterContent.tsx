@@ -102,10 +102,7 @@ export const ShelterContent = () => {
         {/* Load */}
         <div className="flex justify-center">
           <button className="btn-primary flex items-center gap-2 text-lg">
-            Load More Shelters{" "}
-            <span>
-              <ArrowDown />
-            </span>
+            Load More Shelters <ArrowDown aria-hidden="true" />
           </button>
         </div>
       </div>

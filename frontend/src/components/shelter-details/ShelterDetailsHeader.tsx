@@ -14,7 +14,9 @@ const ShelterDetailsHeader = () => {
         <div className="flex items-center gap-8">
           {/* Image */}
           <div className="flex size-32 shrink-0 items-center justify-center border-2 bg-white p-12 shadow-[2px_2px_0px_0px_#000] sm:size-40">
-            <span className="text-5xl">🐶</span>
+            <span className="text-5xl" aria-hidden="true">
+              🐶
+            </span>
           </div>
           {/* Title */}
           <div className="flex flex-col justify-center gap-2">
@@ -23,7 +25,7 @@ const ShelterDetailsHeader = () => {
                 Paws & Claws
               </h1>
               <div className="flex items-center gap-1 border-2 bg-green-400 px-2 uppercase shadow-[2px_2px_0px_0px_#000]">
-                <Check />
+                <Check aria-hidden="true" />
                 <span className="text-xs font-semibold">Verified</span>
               </div>
             </div>
@@ -33,22 +35,25 @@ const ShelterDetailsHeader = () => {
             </p>
             <div className="flex items-center gap-4 text-sm font-medium">
               <div className="flex items-center gap-1">
-                <MapPin /> Brooklyn, NY
+                <MapPin aria-hidden="true" /> Brooklyn, NY
               </div>
               <div className="flex items-center gap-1">
-                <Globe />
+                <Globe aria-hidden="true" />
                 <a href="https://www.pawsandclaws.org">pawsandclaws.org</a>
               </div>
               <div className="flex items-center gap-1">
-                <Users />
+                <Users aria-hidden="true" />
                 1240 Monthly Donors
               </div>
             </div>
           </div>
         </div>
 
-        <button className="cursor-pointer self-end border-2 bg-white p-3 shadow-[4px_4px_0px_0px_#000]">
-          <Share2 className="text-xl" />
+        <button
+          aria-label="Share this shelter"
+          className="cursor-pointer self-end border-2 bg-white p-3 shadow-[4px_4px_0px_0px_#000]"
+        >
+          <Share2 className="text-xl" aria-hidden="true" />
         </button>
       </div>
     </section>

@@ -70,7 +70,7 @@ export const Hero = () => {
           {/* Actions */}
           <div className="flex flex-col gap-4 sm:flex-row">
             <button className="btn-primary gap-2 text-lg">
-              Find a Shelter <ArrowRight />
+              Find a Shelter <ArrowRight aria-hidden="true" />
             </button>
             <button className="btn-secondary text-lg">
               Are you a Shelter?
@@ -91,7 +91,9 @@ export const Hero = () => {
                 circle.rotate || ""
               } border-2 shadow-[4px_4px_0px_0px_#000]`}
             >
-              <span className={circle.emojiSize}>{circle.emoji}</span>
+              <span className={circle.emojiSize} aria-hidden="true">
+                {circle.emoji}
+              </span>
             </div>
           ))}
         </div>

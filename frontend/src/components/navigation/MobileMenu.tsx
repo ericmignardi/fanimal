@@ -44,8 +44,8 @@ export const MobileMenu = ({
               }`
             }
           >
-            <span>{name}</span>
-            <Icon className="text-[var(--color-primary)]" />
+            {name}
+            <Icon className="text-[var(--color-primary)]" aria-hidden="true" />
           </NavLink>
         ))}
 

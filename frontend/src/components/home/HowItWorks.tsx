@@ -21,7 +21,7 @@ const HowItWorksCard = ({
       >
         <Icon className="size-8" />
       </div>
-      <span className="text-xl font-semibold">{title}</span>
+      <h3 className="text-xl font-semibold">{title}</h3>
       <p>{description}</p>
     </div>
   );
