@@ -1,8 +1,11 @@
 package com.fanimal.backend.service;
 
+import com.fanimal.backend.dto.shelter.ShelterResponse;
 import com.fanimal.backend.dto.subscription.SubscriptionRequest;
 import com.fanimal.backend.dto.subscription.SubscriptionResponse;
+import com.fanimal.backend.dto.user.UserResponse;
 import com.fanimal.backend.model.Shelter;
+import com.fanimal.backend.model.Subscription.SubscriptionStatus;
 import com.fanimal.backend.model.User;
 import com.fanimal.backend.repository.ShelterRepository;
 import com.fanimal.backend.repository.SubscriptionRepository;
@@ -51,7 +54,7 @@ public class SubscriptionService {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        Shelter shelter = shelterRepository.findByName(subscriptionRequest.getShelterRequest().getName())
+        Shelter shelter = shelterRepository.findById(subscriptionRequest.getShelterId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter not found"));
         // Get or create Stripe customer
         Customer customer = getOrCreateCustomer(userDetails);
@@ -96,21 +99,19 @@ public class SubscriptionService {
                 .user(user)
                 .shelter(shelter)
                 .tier(subscriptionRequest.getTier())
-                .amount(subscriptionRequest.getTier().getPrice())
                 .startDate(LocalDate.now())
-                .endDate(LocalDate.now().plusMonths(1))
                 .stripeSubscriptionId(stripeSubscription.getId())
+                .status(com.fanimal.backend.model.Subscription.SubscriptionStatus.valueOf(stripeSubscription.getStatus().toUpperCase()))
                 .build();
         subscriptionRepository.save(subscription);
         // Return subscription response
         return SubscriptionResponse.builder()
                 .id(subscription.getId())
-                .amount(subscription.getAmount())
                 .startDate(subscription.getStartDate())
                 .tier(subscription.getTier())
-                .shelter(shelter)
-                .user(user)
-                .clientSecret(clientSecret)
+                .shelter(ShelterResponse.fromEntity(shelter))
+                .user(UserResponse.fromEntity(user))
+                .status(subscription.getStatus())
                 .build();
     }
 
@@ -119,7 +120,14 @@ public class SubscriptionService {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         return subscriptionRepository.findAllByUser(user).stream()
-                .map(SubscriptionResponse::fromEntity)
+                .map(subscription -> SubscriptionResponse.builder()
+                        .id(subscription.getId())
+                        .user(UserResponse.fromEntity(subscription.getUser()))
+                        .shelter(ShelterResponse.fromEntity(subscription.getShelter()))
+                        .startDate(subscription.getStartDate())
+                        .tier(subscription.getTier())
+                        .status(subscription.getStatus())
+                        .build())
                 .toList();
     }
 
@@ -134,7 +142,8 @@ public class SubscriptionService {
         // Cancel subscription in Stripe
         Subscription stripeSubscription = Subscription.retrieve(subscription.getStripeSubscriptionId());
         stripeSubscription.cancel(SubscriptionCancelParams.builder().build());
-        // Remove from local DB
-        subscriptionRepository.delete(subscription);
+        // Update local DB
+        subscription.setStatus(SubscriptionStatus.valueOf(stripeSubscription.getStatus().toUpperCase()));
+        subscriptionRepository.save(subscription);
     }
 }

@@ -3,6 +3,7 @@ package com.fanimal.backend.controller;
 import com.fanimal.backend.model.Subscription;
 import com.fanimal.backend.repository.SubscriptionRepository;
 import com.stripe.exception.SignatureVerificationException;
+import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.Invoice;
 import com.stripe.net.Webhook;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @RestController
@@ -56,25 +59,32 @@ public class StripeWebhookController {
         Invoice invoice = (Invoice) event.getDataObjectDeserializer()
                 .getObject().orElse(null);
         if (invoice == null) return;
-        com.stripe.model.Subscription stripeSub = invoice.getSubscriptionObject();
-        if (stripeSub == null) return;
-        Optional<Subscription> subOpt = subscriptionRepository.findByStripeSubscriptionId(stripeSub.getId());
-        subOpt.ifPresent(sub -> {
-            // Mark subscription as active or update fields if needed
-            sub.setEndDate(sub.getEndDate().plusMonths(1)); // example: extend subscription
-            subscriptionRepository.save(sub);
-        });
+        String stripeSubscriptionId = invoice.getSubscription();
+        if (stripeSubscriptionId == null) return;
+        subscriptionRepository.findByStripeSubscriptionId(stripeSubscriptionId)
+                .ifPresent(sub -> {
+                    try {
+                        com.stripe.model.Subscription stripeSub = com.stripe.model.Subscription.retrieve(stripeSubscriptionId);
+                        sub.setStatus(Subscription.SubscriptionStatus.valueOf(stripeSub.getStatus().toUpperCase()));
+                        sub.setStartDate(Instant.ofEpochSecond(stripeSub.getCurrentPeriodStart()).atZone(ZoneId.systemDefault()).toLocalDate());
+                        sub.setEndDate(Instant.ofEpochSecond(stripeSub.getCurrentPeriodEnd()).atZone(ZoneId.systemDefault()).toLocalDate());
+                        subscriptionRepository.save(sub);
+                    } catch (StripeException e) {
+                        // Handle exception
+                    }
+                });
     }
 
     private void handleInvoicePaymentFailed(Event event) {
         Invoice invoice = (Invoice) event.getDataObjectDeserializer()
                 .getObject().orElse(null);
         if (invoice == null) return;
-        com.stripe.model.Subscription stripeSub = invoice.getSubscriptionObject();
-        if (stripeSub == null) return;
-        subscriptionRepository.findByStripeSubscriptionId(stripeSub.getId())
+        String stripeSubscriptionId = invoice.getSubscription();
+        if (stripeSubscriptionId == null) return;
+        subscriptionRepository.findByStripeSubscriptionId(stripeSubscriptionId)
                 .ifPresent(sub -> {
-                    // Optionally mark subscription as past due or inactive
+                    sub.setStatus(Subscription.SubscriptionStatus.PAST_DUE);
+                    subscriptionRepository.save(sub);
                 });
     }
 
@@ -84,7 +94,8 @@ public class StripeWebhookController {
         if (stripeSub == null) return;
         subscriptionRepository.findByStripeSubscriptionId(stripeSub.getId())
                 .ifPresent(sub -> {
-                    subscriptionRepository.delete(sub);
+                    sub.setStatus(Subscription.SubscriptionStatus.CANCELED);
+                    subscriptionRepository.save(sub);
                 });
     }
 
@@ -94,7 +105,20 @@ public class StripeWebhookController {
         if (stripeSub == null) return;
         subscriptionRepository.findByStripeSubscriptionId(stripeSub.getId())
                 .ifPresent(sub -> {
-                    // Update status, tier, or endDate if needed
+                    sub.setStatus(Subscription.SubscriptionStatus.valueOf(stripeSub.getStatus().toUpperCase()));
+                    sub.setStartDate(Instant.ofEpochSecond(stripeSub.getCurrentPeriodStart()).atZone(ZoneId.systemDefault()).toLocalDate());
+                    sub.setEndDate(Instant.ofEpochSecond(stripeSub.getCurrentPeriodEnd()).atZone(ZoneId.systemDefault()).toLocalDate());
+                    // This part is a bit tricky, as we need to map the Stripe price ID back to our Tier enum.
+                    // This assumes that the shelter's price IDs are up-to-date.
+                    String priceId = stripeSub.getItems().getData().get(0).getPrice().getId();
+                    if (priceId.equals(sub.getShelter().getStripeBasicPriceId())) {
+                        sub.setTier(Subscription.Tier.BASIC);
+                    } else if (priceId.equals(sub.getShelter().getStripeStandardPriceId())) {
+                        sub.setTier(Subscription.Tier.STANDARD);
+                    } else if (priceId.equals(sub.getShelter().getStripePremiumPriceId())) {
+                        sub.setTier(Subscription.Tier.PREMIUM);
+                    }
+                    subscriptionRepository.save(sub);
                 });
     }
 }

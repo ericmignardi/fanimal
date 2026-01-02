@@ -68,7 +68,6 @@ export const Header = ({ user }: HeaderProps) => {
         <div className="hidden items-center gap-4 md:flex">
           {user ? (
             <>
-              <button className="btn-primary">Profile</button>
               <button onClick={handleLogout} className="btn-secondary">
                 Logout
               </button>

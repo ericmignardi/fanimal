@@ -5,9 +5,9 @@ services:
     image: postgres:15
     container_name: fanimal_db
     environment:
-      POSTGRES_DB: fanimal
-      POSTGRES_USER: fanimal_user
-      POSTGRES_PASSWORD: fanimal_pass
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -24,26 +24,28 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/fanimal
-      SPRING_DATASOURCE_USERNAME: fanimal_user
-      SPRING_DATASOURCE_PASSWORD: fanimal_pass
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: "true"
-      JWT_SECRET: hHBC0bRnv1XJnooWuDlC5yAlcd9Np0pNmPXReR98hrg=
-      JWT_EXPIRATION: 360000
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      SPRING_JPA_SHOW_SQL: ${SPRING_JPA_SHOW_SQL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      STRIPE_API_KEY: ${STRIPE_API_KEY:-sk_test_placeholder}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-whsec_placeholder}
     networks:
       - fanimal
 
   frontend:
     build:
       context: ./frontend
+      args:
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL}
     container_name: fanimal_frontend
     depends_on:
       - backend
     ports:
-      - "3000:80"
-    environment:
-      VITE_BACKEND_URL: http://backend:8080/api
+      - "5173:5173"
     networks:
       - fanimal
 

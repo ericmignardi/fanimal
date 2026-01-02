@@ -28,7 +28,12 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
     try {
       const response = await axiosInstance.post("/auth/register", formData);
       if (response.status === 201) {
-        setUser(response.data.user);
+        const { token: newToken, user } = response.data;
+        if (newToken) {
+          setToken(newToken);
+          localStorage.setItem("token", newToken);
+        }
+        setUser(user);
         toast.success("Registration successful!");
       } else {
         toast.error("Registration failed.");
@@ -77,12 +82,7 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
     try {
       const response = await axiosInstance.get("/auth/verify");
       if (response.status === 200) {
-        const { token: newToken, user } = response.data;
-        if (newToken) {
-          setToken(newToken);
-          localStorage.setItem("token", newToken);
-        }
-        setUser(user);
+        setUser(response.data);
       } else {
         setToken(null);
         localStorage.removeItem("token");

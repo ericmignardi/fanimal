@@ -95,6 +95,7 @@ export const ShelterContent = () => {
             </div>
           ) : shelters && shelters.length > 0 ? (
             shelters.map((shelter) => (
+              // modify card to match dto response or add fields to shelter model, currently hardcoding missing values
               <ShelterCard
                 key={shelter.id}
                 id={String(shelter.id)}

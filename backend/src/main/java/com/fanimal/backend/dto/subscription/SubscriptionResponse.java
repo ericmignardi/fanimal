@@ -1,9 +1,9 @@
 package com.fanimal.backend.dto.subscription;
 
-import com.fanimal.backend.model.Shelter;
-import com.fanimal.backend.model.Subscription;
+import com.fanimal.backend.dto.shelter.ShelterResponse;
+import com.fanimal.backend.dto.user.UserResponse;
+import com.fanimal.backend.model.Subscription.SubscriptionStatus;
 import com.fanimal.backend.model.Subscription.Tier;
-import com.fanimal.backend.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,23 +18,10 @@ import java.time.LocalDate;
 public class SubscriptionResponse {
 
     private Long id;
-    private User user;
-    private Shelter shelter;
-    private double amount;
+    private UserResponse user;
+    private ShelterResponse shelter;
     private LocalDate startDate;
     private LocalDate endDate;
     private Tier tier;
-    private String clientSecret;
-
-    public static SubscriptionResponse fromEntity(Subscription subscription) {
-        return SubscriptionResponse.builder()
-                .id(subscription.getId())
-                .user(subscription.getUser())
-                .shelter(subscription.getShelter())
-                .amount(subscription.getAmount())
-                .startDate(subscription.getStartDate())
-                .endDate(subscription.getEndDate())
-                .tier(subscription.getTier())
-                .build();
-    }
+    private SubscriptionStatus status;
 }

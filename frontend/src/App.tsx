@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { Home } from "./pages/Home.tsx";
 import { Header } from "./components/navigation/Header.tsx";
@@ -10,7 +10,7 @@ import { Loader } from "lucide-react";
 import { ShelterDetails } from "./pages/ShelterDetails.tsx";
 
 function App() {
-  const { user, verify, isVerifying, logout } = useAuth();
+  const { user, verify, isVerifying } = useAuth();
 
   useEffect(() => {
     verify();
@@ -30,10 +30,7 @@ function App() {
       <Header user={user} />
       <main className="flex-1 pt-[72px]">
         <Routes>
-          <Route
-            path="/"
-            element={!user ? <Home /> : <Navigate to="/shelters" />}
-          />
+          <Route path="/" element={<Home />} />
           <Route path="/shelters" element={<Shelters />} />
           <Route path="/shelters/:id" element={<ShelterDetails />} />
         </Routes>
