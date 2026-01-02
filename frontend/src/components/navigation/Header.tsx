@@ -3,15 +3,19 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { Menu, PawPrint, X } from "lucide-react";
 import { MobileMenu } from "./MobileMenu";
 import type { UserType } from "../../types/AuthTypes";
+import { useAuth } from "../../hooks/useAuth";
+import AuthMenu from "./AuthMenu";
 
 type HeaderProps = {
   user: UserType | null;
-  logout: () => Promise<void>;
 };
 
-export const Header = ({ user, logout }: HeaderProps) => {
+export const Header = ({ user }: HeaderProps) => {
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "register" | null>(null);
+
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const toggleMenu = () => setMobileMenu((prev) => !prev);
 
@@ -19,7 +23,15 @@ export const Header = ({ user, logout }: HeaderProps) => {
     document.body.style.overflow = mobileMenu ? "hidden" : "auto";
   }, [mobileMenu]);
 
-  const handleClick = async () => {
+  useEffect(() => {
+    document.body.style.overflow = authMode ? "hidden" : "auto";
+  }, [authMode]);
+
+  const openLogin = () => setAuthMode("login");
+  const openRegister = () => setAuthMode("register");
+  const closeAuth = () => setAuthMode(null);
+
+  const handleLogout = async () => {
     await logout();
     navigate("/");
   };
@@ -57,14 +69,18 @@ export const Header = ({ user, logout }: HeaderProps) => {
           {user ? (
             <>
               <button className="btn-primary">Profile</button>
-              <button onClick={handleClick} className="btn-secondary">
+              <button onClick={handleLogout} className="btn-secondary">
                 Logout
               </button>
             </>
           ) : (
             <>
-              <button className="btn-primary h-10">Login</button>
-              <button className="btn-secondary h-10">Register</button>
+              <button onClick={openLogin} className="btn-primary h-10">
+                Login
+              </button>
+              <button onClick={openRegister} className="btn-secondary h-10">
+                Register
+              </button>
             </>
           )}
         </div>
@@ -88,6 +104,9 @@ export const Header = ({ user, logout }: HeaderProps) => {
       {mobileMenu && (
         <MobileMenu setMobileMenu={setMobileMenu} user={user} logout={logout} />
       )}
+
+      {/* Auth Menu */}
+      {authMode && <AuthMenu mode={authMode} onClose={closeAuth} />}
     </header>
   );
 };

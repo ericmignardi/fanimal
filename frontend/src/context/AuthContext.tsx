@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { axiosInstance, setTokenGetter } from "../services/api";
 import toast from "react-hot-toast";
 import type {
-  RegisterFormType,
-  LoginFormType,
+  RegisterFormData,
+  LoginFormData,
   AuthProviderPropsType,
   UserType,
 } from "../types/AuthTypes";
@@ -23,7 +23,7 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
     setTokenGetter(() => token);
   }, [token]);
 
-  const register = async (formData: RegisterFormType) => {
+  const register = async (formData: RegisterFormData) => {
     setIsRegistering(true);
     try {
       const response = await axiosInstance.post("/auth/register", formData);
@@ -45,7 +45,7 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
     }
   };
 
-  const login = async (formData: LoginFormType) => {
+  const login = async (formData: LoginFormData) => {
     setIsLoggingIn(true);
     try {
       const response = await axiosInstance.post("/auth/login", formData);

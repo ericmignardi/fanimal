@@ -52,9 +52,7 @@ export const ShelterHeader = () => {
             <span
               className="mx-2 hidden h-8 w-[1px] bg-black sm:block"
               aria-hidden="true"
-            >
-              |
-            </span>
+            ></span>
 
             <button className="flex items-center gap-1 border-2 bg-red-400 px-4 py-1 shadow-[2px_2px_0px_0px_#000]">
               <Lightbulb aria-hidden="true" />

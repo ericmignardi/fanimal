@@ -1,7 +1,14 @@
 import { DollarSign, Heart } from "lucide-react";
 import { useState } from "react";
+import type { ShelterType } from "../../types/ShelterTypes";
 
-export const ShelterDetailsContent = () => {
+type ShelterDetailsContentProps = {
+  shelter: ShelterType;
+};
+
+export const ShelterDetailsContent = ({
+  shelter,
+}: ShelterDetailsContentProps) => {
   const [freq, setFreq] = useState<string>("monthly");
 
   return (
@@ -49,15 +56,13 @@ export const ShelterDetailsContent = () => {
               <h2 className="text-2xl font-semibold uppercase">Our Mission</h2>
             </div>
             <p className="text-base font-medium text-slate-800">
-              At Paws & Claws, we believe every dog deserves a second chance, no
-              matter their medical condition or age. Started in a garage in
-              2018, we have grown into a network of 50+ foster homes.
+              At {shelter.name}, we believe every animal deserves a second
+              chance.
               <br />
               <br />
               Your monthly subscription goes directly towards veterinary bills,
-              high-quality food, and rehabilitation training for dogs recovering
-              from trauma. We are 100% volunteer-run, meaning every dollar helps
-              a dog.
+              high-quality food, and rehabilitation. We are 100% volunteer-run,
+              meaning every dollar helps an animal.
             </p>
           </div>
 

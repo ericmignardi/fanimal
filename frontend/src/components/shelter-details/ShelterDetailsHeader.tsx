@@ -1,6 +1,11 @@
 import { Check, MapPin, Globe, Users, Share2 } from "lucide-react";
+import type { ShelterType } from "../../types/ShelterTypes";
 
-const ShelterDetailsHeader = () => {
+type ShelterDetailsHeaderProps = {
+  shelter: ShelterType;
+};
+
+const ShelterDetailsHeader = ({ shelter }: ShelterDetailsHeaderProps) => {
   return (
     <section className="w-full bg-blue-100">
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-12 px-4 py-12 sm:px-6 sm:py-20 lg:px-8">
@@ -22,7 +27,7 @@ const ShelterDetailsHeader = () => {
           <div className="flex flex-col justify-center gap-2">
             <div className="flex items-center gap-2">
               <h1 className="text-4xl font-semibold uppercase sm:text-5xl">
-                Paws & Claws
+                {shelter.name}
               </h1>
               <div className="flex items-center gap-1 border-2 bg-green-400 px-2 uppercase shadow-[2px_2px_0px_0px_#000]">
                 <Check aria-hidden="true" />
@@ -30,20 +35,18 @@ const ShelterDetailsHeader = () => {
               </div>
             </div>
             <p className="text-lg font-medium text-slate-800">
-              Dedicated to rehabilitating stray dogs in the greater metro area.
-              We focus on medical cases that others turn away.
+              {shelter.description}
             </p>
             <div className="flex items-center gap-4 text-sm font-medium">
               <div className="flex items-center gap-1">
-                <MapPin aria-hidden="true" /> Brooklyn, NY
+                <MapPin aria-hidden="true" /> {shelter.address}
               </div>
               <div className="flex items-center gap-1">
                 <Globe aria-hidden="true" />
-                <a href="https://www.pawsandclaws.org">pawsandclaws.org</a>
+                <a href="#">website.org</a>
               </div>
               <div className="flex items-center gap-1">
-                <Users aria-hidden="true" />
-                1240 Monthly Donors
+                <Users aria-hidden="true" />0 Monthly Donors
               </div>
             </div>
           </div>
