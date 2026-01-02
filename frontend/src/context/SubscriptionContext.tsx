@@ -81,7 +81,7 @@ export function SubscriptionProvider({
     try {
       const response = await axiosInstance.delete(`/subscriptions/${id}`);
       if (response.status === 204) {
-        setSubscriptions((prev) => prev?.filter((s) => s.id !== id));
+        setSubscriptions((prev) => prev?.filter((s) => s.id !== id) ?? null);
         toast.success("Unsubscribe successful!");
       } else {
         toast.error("Unsubscribe failed.");
@@ -106,6 +106,7 @@ export function SubscriptionProvider({
         subscribe,
         findAllByUser,
         unsubscribe,
+        isGettingOrCreatingCustomer: false,
         isSubscribing,
         isFindingAllByUser,
         isUnsubscribing,
