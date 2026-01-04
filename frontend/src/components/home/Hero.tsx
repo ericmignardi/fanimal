@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface DecorativeCircle {
   emoji: string;
@@ -69,9 +70,9 @@ export const Hero = () => {
 
           {/* Actions */}
           <div className="flex flex-col gap-4 sm:flex-row">
-            <button className="btn-primary gap-2 text-lg">
+            <Link to="/shelters" className="btn-primary gap-2 text-lg">
               Find a Shelter <ArrowRight aria-hidden="true" />
-            </button>
+            </Link>
             <button className="btn-secondary text-lg">
               Are you a Shelter?
             </button>
